@@ -1,0 +1,14 @@
+
+export default {
+  LOAD_STARTED: '@@iguazu-rest/LOAD_STARTED',
+  LOAD_COLLECTION_STARTED: '@@iguazu-rest/LOAD_COLLECTION_STARTED',
+  CREATE_STARTED: '@@iguazu-rest/CREATE_STARTED',
+  UPDATE_STARTED: '@@iguazu-rest/UPDATE_STARTED',
+  DESTROY_STARTED: '@@iguazu-rest/DESTROY_STARTED',
+  LOAD_FINISHED: '@@iguazu-rest/LOAD_FINISHED',
+  LOAD_COLLECTION_FINISHED: '@@iguazu-rest/LOAD_COLLECTION_FINISHED',
+  CREATE_FINISHED: '@@iguazu-rest/CREATE_FINISHED',
+  UPDATE_FINISHED: '@@iguazu-rest/UPDATE_FINISHED',
+  DESTROY_FINISHED: '@@iguazu-rest/DESTROY_FINISHED',
+  RESET: '@@iguazu-rest/RESET',
+};

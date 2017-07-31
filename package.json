@@ -1,0 +1,40 @@
+{
+  "name": "iguazu-rest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src --out-dir lib",
+    "lint": "eslint --ignore-path .gitignore --ext js,jsx .",
+    "prepublish": "npm run build",
+    "test": "jest",
+    "posttest": "npm run lint"
+  },
+  "author": "",
+  "license": "ISC",
+  "jest": {
+    "preset": "amex-jest-preset",
+    "setupFiles": [
+      "./setupJest.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "./setupJest.js"
+    ]
+  },
+  "dependencies": {
+    "deepmerge": "^1.5.0",
+    "immutable": "^3.8.1",
+    "isomorphic-fetch": "^2.2.1",
+    "object-hash": "^1.1.8"
+  },
+  "devDependencies": {
+    "amex-jest-preset": "^4.0.1",
+    "babel-cli": "^6.24.1",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-env": "^1.6.0",
+    "eslint": "^3.19.0",
+    "eslint-config-amex": "^6.0.0",
+    "jest": "^20.0.4",
+    "jest-fetch-mock": "^1.2.0"
+  }
+}

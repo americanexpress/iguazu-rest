@@ -89,16 +89,16 @@ import BookList from './BookList';
 
 const Author = ({ id, author: { name, bio } }) => (
   <div>
-  	<div>{name}</div>
-  	<div>{bio}</div>
-  	<BookList authorId={id} />
+    <div>{name}</div>
+    <div>{bio}</div>
+    <BookList authorId={id} />
   </div>
 );
 
 function loadDataAsProps({ store: { dispatch }, ownProps: { id } }) {
-	return {
-		author: () => dispatch(queryResource({ resource: 'author', id }))
-	};
+  return {
+    author: () => dispatch(queryResource({ resource: 'author', id }))
+  };
 }
 
 export default connectAsync({ loadDataAsProps })(Author);
@@ -109,15 +109,15 @@ import { queryCollection } from 'iguazu-rest';
 
 const BookList = ({ books }) => (
   <div>
-  	{books.map(book => <Book book={book} />)}
+    {books.map(book => <Book book={book} />)}
   </div>
 );
 
 function loadDataAsProps({ store: { dispatch }, ownProps: { authorId } }) {
-	return {
-		books: () =>
-			dispatch(queryCollection( resource: 'book', id: { authorId } ))
-	}
+  return {
+    books: () =>
+      dispatch(queryCollection( resource: 'book', id: { authorId } ))
+  }
 }
 
 export default connectAsync({ loadDataAsProps })(BookList);

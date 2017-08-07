@@ -14,11 +14,11 @@ export function loadResource({ resource, id, opts, forceFetch }) {
   return (dispatch, getState) => {
     const state = getState();
     let promise;
-    if (resourceIsLoaded({ state, resource, id }) && !forceFetch) {
-      const data = getResource({ state: getState(), resource, id });
+    if (resourceIsLoaded({ resource, id })(state) && !forceFetch) {
+      const data = getResource({ resource, id })(state);
       promise = data instanceof Error ? Promise.reject(data) : Promise.resolve(data);
-    } else if (resourceIsLoading({ state, resource, id }) && !forceFetch) {
-      promise = getResourceLoadPromise({ state, resource, id });
+    } else if (resourceIsLoading({ resource, id })(state) && !forceFetch) {
+      promise = getResourceLoadPromise({ resource, id })(state);
     } else {
       promise = dispatch(executeFetch({ resource, id, opts, actionType: 'LOAD' }));
     }
@@ -31,11 +31,11 @@ export function loadCollection({ resource, id, opts, forceFetch }) {
   return (dispatch, getState) => {
     const state = getState();
     let promise;
-    if (collectionIsLoaded({ state, resource, id, opts }) && !forceFetch) {
-      const data = getCollection({ state, resource, id, opts });
+    if (collectionIsLoaded({ resource, id, opts })(state) && !forceFetch) {
+      const data = getCollection({ resource, id, opts })(state);
       promise = data instanceof Error ? Promise.reject(data) : Promise.resolve(data);
-    } else if (collectionIsLoading({ state, resource, id, opts }) && !forceFetch) {
-      promise = getCollectionLoadPromise({ state, resource, id, opts });
+    } else if (collectionIsLoading({ resource, id, opts })(state) && !forceFetch) {
+      promise = getCollectionLoadPromise({ resource, id, opts })(state);
     } else {
       promise = dispatch(executeFetch({ resource, id, opts, actionType: 'LOAD_COLLECTION' }));
     }

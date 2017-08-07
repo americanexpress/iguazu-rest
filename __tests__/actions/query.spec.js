@@ -7,8 +7,8 @@ jest.mock('../../src/actions/crud', () => ({
 }));
 
 jest.mock('../../src/selectors', () => ({
-  getResource: jest.fn(() => 'resource'),
-  getCollection: jest.fn(() => 'collection'),
+  getResource: jest.fn(() => () => 'resource'),
+  getCollection: jest.fn(() => () => 'collection'),
   resourceIsLoaded: jest.fn(),
   collectionIsLoaded: jest.fn(),
 }));
@@ -26,7 +26,7 @@ describe('iguazu query actions', () => {
 
   describe('queryResource', () => {
     it('should return a loading response if the resource is loading', () => {
-      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => false);
+      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       const thunk = queryResource({ resource, id, opts });
       const loadResponse = thunk(dispatch, getState);
       expect(loadResponse.data).toEqual('resource');
@@ -35,7 +35,7 @@ describe('iguazu query actions', () => {
     });
 
     it('should return a loaded response if the resource is loaded', () => {
-      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => true);
+      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       const thunk = queryResource({ resource, id, opts });
       const loadResponse = thunk(dispatch, getState);
       expect(loadResponse.data).toEqual('resource');
@@ -44,7 +44,7 @@ describe('iguazu query actions', () => {
     });
 
     it('should return a loading response if the resource is loaded, but forceFetch is specified', () => {
-      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => false);
+      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       const thunk = queryResource({ resource, id, opts, forceFetch: true });
       const loadResponse = thunk(dispatch, getState);
       expect(loadResponse.data).toEqual('resource');
@@ -55,7 +55,7 @@ describe('iguazu query actions', () => {
 
   describe('queryCollection', () => {
     it('should return a loading response if the collection is loading', () => {
-      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => false);
+      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       const thunk = queryCollection({ resource, id, opts });
       const loadResponse = thunk(dispatch, getState);
       expect(loadResponse.data).toEqual('collection');
@@ -64,7 +64,7 @@ describe('iguazu query actions', () => {
     });
 
     it('should return a loaded response if the collection is loaded', () => {
-      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => true);
+      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       const thunk = queryCollection({ resource, id, opts });
       const loadResponse = thunk(dispatch, getState);
       expect(loadResponse.data).toEqual('collection');
@@ -73,7 +73,7 @@ describe('iguazu query actions', () => {
     });
 
     it('should return a loading response if the collection is loaded, but forceFetch is specified', () => {
-      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => false);
+      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       const thunk = queryCollection({ resource, id, opts, forceFetch: true });
       const loadResponse = thunk(dispatch, getState);
       expect(loadResponse.data).toEqual('collection');

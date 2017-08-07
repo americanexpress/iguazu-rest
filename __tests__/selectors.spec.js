@@ -26,7 +26,7 @@ describe('selectors', () => {
           users: { items: { [idHash]: { id: '123', data: 'data' } } },
         }),
       };
-      expect(resourceIsLoaded({ state, resource, id })).toBe(true);
+      expect(resourceIsLoaded({ resource, id })(state)).toBe(true);
     });
 
     it('should return false if the resource is not loaded', () => {
@@ -35,7 +35,7 @@ describe('selectors', () => {
           users: { items: {} },
         }),
       };
-      expect(resourceIsLoaded({ state, resource, id })).toBe(false);
+      expect(resourceIsLoaded({ resource, id })(state)).toBe(false);
     });
   });
 
@@ -46,7 +46,7 @@ describe('selectors', () => {
           users: { items: { [idHash]: { id: '123', data: 'data' } } },
         }),
       };
-      expect(getResource({ state, resource, id })).toEqual({ id: '123', data: 'data' });
+      expect(getResource({ resource, id })(state)).toEqual({ id: '123', data: 'data' });
     });
 
     it('should return undefined if the resource is not loaded', () => {
@@ -55,7 +55,7 @@ describe('selectors', () => {
           users: { items: {} },
         }),
       };
-      expect(getResource({ state, resource, id })).toBeUndefined();
+      expect(getResource({ resource, id })(state)).toBeUndefined();
     });
   });
 
@@ -67,7 +67,7 @@ describe('selectors', () => {
           users: { loading: { [idHash]: promise } },
         }),
       };
-      expect(resourceIsLoading({ state, resource, id })).toBe(true);
+      expect(resourceIsLoading({ resource, id })(state)).toBe(true);
     });
 
     it('should return false if the resource is not loading', () => {
@@ -76,7 +76,7 @@ describe('selectors', () => {
           users: { loading: {} },
         }),
       };
-      expect(resourceIsLoading({ state, resource, id })).toBe(false);
+      expect(resourceIsLoading({ resource, id })(state)).toBe(false);
     });
   });
 
@@ -88,7 +88,7 @@ describe('selectors', () => {
           users: { loading: { [idHash]: promise } },
         }),
       };
-      expect(getResourceLoadPromise({ state, resource, id })).toBe(promise);
+      expect(getResourceLoadPromise({ resource, id })(state)).toBe(promise);
     });
   });
 
@@ -101,7 +101,7 @@ describe('selectors', () => {
           users: { collections: { [collectionIdHash]: { [queryHash]: ['123'] } } },
         }),
       };
-      expect(collectionIsLoaded({ state, resource })).toBe(true);
+      expect(collectionIsLoaded({ resource })(state)).toBe(true);
     });
 
     it('should return false if the collection is not loaded', () => {
@@ -110,7 +110,7 @@ describe('selectors', () => {
           users: { loaded: {} },
         }),
       };
-      expect(collectionIsLoaded({ state, resource })).toBe(false);
+      expect(collectionIsLoaded({ resource })(state)).toBe(false);
     });
   });
 
@@ -126,7 +126,7 @@ describe('selectors', () => {
           },
         }),
       };
-      expect(getCollection({ state, resource })).toEqual([{ id: '123', data: 'data' }]);
+      expect(getCollection({ resource })(state)).toEqual([{ id: '123', data: 'data' }]);
     });
 
     it('should return the collection load error if it failed to load', () => {
@@ -141,7 +141,7 @@ describe('selectors', () => {
           },
         }),
       };
-      expect(getCollection({ state, resource })).toBe(error);
+      expect(getCollection({ resource })(state)).toBe(error);
     });
   });
 
@@ -155,7 +155,7 @@ describe('selectors', () => {
           users: { loading: { [collectionIdHash]: { [queryHash]: promise } } },
         }),
       };
-      expect(collectionIsLoading({ state, resource })).toBe(true);
+      expect(collectionIsLoading({ resource })(state)).toBe(true);
     });
 
     it('should return false if the collection is not loading', () => {
@@ -164,7 +164,7 @@ describe('selectors', () => {
           users: { loading: {} },
         }),
       };
-      expect(collectionIsLoading({ state, resource })).toBe(false);
+      expect(collectionIsLoading({ resource })(state)).toBe(false);
     });
   });
 
@@ -178,7 +178,7 @@ describe('selectors', () => {
           users: { loading: { [collectionIdHash]: { [queryHash]: promise } } },
         }),
       };
-      expect(getCollectionLoadPromise({ state, resource })).toBe(promise);
+      expect(getCollectionLoadPromise({ resource })(state)).toBe(promise);
     });
   });
 });

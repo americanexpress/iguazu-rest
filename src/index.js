@@ -21,7 +21,7 @@ import resourcesReducer from './reducer';
 import config from './config';
 
 /* Public API */
-export default {
+export {
   loadResource,
   loadCollection,
   createResource,

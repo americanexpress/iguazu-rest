@@ -2,7 +2,7 @@ import { Map as iMap, List as iList, fromJS } from 'immutable';
 import hash from 'object-hash';
 
 import config from './config';
-import iguazuRestTypes from './types';
+import * as iguazuRestTypes from './types';
 import { getQueryHash } from './helpers/hash';
 
 const {

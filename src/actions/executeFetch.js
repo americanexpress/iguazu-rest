@@ -1,6 +1,6 @@
 import merge from 'deepmerge';
 
-import types from '../types';
+import * as types from '../types';
 import { buildFetchUrl } from '../helpers/url';
 import { getIdHash } from '../helpers/hash';
 import { resources, defaultOpts, baseFetch } from '../config';

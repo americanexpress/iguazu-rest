@@ -1,7 +1,7 @@
 import hash from 'object-hash';
 
 import config from '../../src/config';
-import types from '../../src/types';
+import * as types from '../../src/types';
 
 import executeFetch from '../../src/actions/executeFetch';
 

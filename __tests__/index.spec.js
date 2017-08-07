@@ -1,17 +1,29 @@
-import publicAPI from '../src/index';
+import {
+  loadResource,
+  loadCollection,
+  createResource,
+  updateResource,
+  destroyResource,
+  queryResource,
+  queryCollection,
+  getResource,
+  getCollection,
+  resourcesReducer,
+  config,
+} from '../src/index';
 
 describe('index', () => {
   it('should expose the expected publicAPI', () => {
-    expect(publicAPI.loadResource).toBeDefined();
-    expect(publicAPI.loadCollection).toBeDefined();
-    expect(publicAPI.createResource).toBeDefined();
-    expect(publicAPI.updateResource).toBeDefined();
-    expect(publicAPI.destroyResource).toBeDefined();
-    expect(publicAPI.queryResource).toBeDefined();
-    expect(publicAPI.queryCollection).toBeDefined();
-    expect(publicAPI.getResource).toBeDefined();
-    expect(publicAPI.getCollection).toBeDefined();
-    expect(publicAPI.resourcesReducer).toBeDefined();
-    expect(publicAPI.config).toBeDefined();
+    expect(loadResource).toBeDefined();
+    expect(loadCollection).toBeDefined();
+    expect(createResource).toBeDefined();
+    expect(updateResource).toBeDefined();
+    expect(destroyResource).toBeDefined();
+    expect(queryResource).toBeDefined();
+    expect(queryCollection).toBeDefined();
+    expect(getResource).toBeDefined();
+    expect(getCollection).toBeDefined();
+    expect(resourcesReducer).toBeDefined();
+    expect(config).toBeDefined();
   });
 });

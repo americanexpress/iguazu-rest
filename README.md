@@ -133,8 +133,8 @@ export default connectAsync({ loadDataAsProps })(BookList);
 These actions return a promise that resolves with the fetched data on successful requests and reject with an error on unsuccessful requests. The error also contains the status and the body if you need to inspect those.
 
 ### Selectors
-##### `getResource({ state, resource, id })`
-##### `getCollection({ state, resource, id, opts })`
+##### `getResource({ resource, id })(state)`
+##### `getCollection({ resource, id, opts })(state)`
 
 ### Query opts
 iguazu-rest allows you to specify your query parameters as part of the opts passed to fetch. If they are used to filter a collection, make sure they are passed in this way instead of adding them directly to the url because it is necessary for proper caching. All of the resources get normalized, so iguazu-rest needs to a way to cache which resources came back for a set of query parameters.

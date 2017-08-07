@@ -98,6 +98,7 @@ describe('executeFetch', () => {
         expect(e).toEqual(error);
         expect(e.status).toEqual(500);
         expect(e.body).toEqual('body');
+        promise.catch(() => 'caught promise error'); // catch promise so unhandled promise doesn't show up in console
       }
     });
   });

@@ -9,7 +9,7 @@ import {
   getResource,
   getCollection,
   resourcesReducer,
-  config,
+  configureIguazuREST,
 } from '../src/index';
 
 describe('index', () => {
@@ -24,6 +24,6 @@ describe('index', () => {
     expect(getResource).toBeDefined();
     expect(getCollection).toBeDefined();
     expect(resourcesReducer).toBeDefined();
-    expect(config).toBeDefined();
+    expect(configureIguazuREST).toBeDefined();
   });
 });

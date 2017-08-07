@@ -18,7 +18,7 @@ import {
 
 import resourcesReducer from './reducer';
 
-import config from './config';
+import { configureIguazuREST } from './config';
 
 /* Public API */
 export {
@@ -32,5 +32,5 @@ export {
   getResource,
   getCollection,
   resourcesReducer,
-  config,
+  configureIguazuREST,
 };

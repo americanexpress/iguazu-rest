@@ -3,7 +3,7 @@ import merge from 'deepmerge';
 import * as types from '../types';
 import { buildFetchUrl } from '../helpers/url';
 import { getIdHash } from '../helpers/hash';
-import { resources, defaultOpts, baseFetch } from '../config';
+import config from '../config';
 
 function startsWith(string, target) {
   return String(string).slice(0, target.length) === target;
@@ -29,6 +29,7 @@ const actionTypeMethodMap = {
 };
 
 function getFetchPromise({ resource, id, opts, actionType, state }) {
+  const { resources, defaultOpts, baseFetch } = config;
   const { url, opts: resourceOpts } = resources[resource].fetch(id, actionType, state);
 
   const fetchOpts = merge.all([

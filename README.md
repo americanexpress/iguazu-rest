@@ -8,9 +8,9 @@ Iguazu REST uses a config object that allows you to register resources and provi
 
 
 ```javascript
-import { config } from 'iguazu-rest';
+import { configureIguazuREST } from 'iguazu-rest';
 
-Object.assign(config, {
+configureIguazuREST({
   // the resources you want cached
   resources: {
     // this key will be used in actions
@@ -39,9 +39,6 @@ Object.assign(config, {
   // override state location, defaults to state.resources
   getToState: (state) => state.data.resources
 });
-
-// Freeze the config if you don't want it to mutate after initialization
-Object.freeze(config);
 ```
 
 #### Resource Fetch Function

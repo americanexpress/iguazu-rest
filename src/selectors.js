@@ -1,7 +1,9 @@
 import { Map as iMap } from 'immutable';
 
-import { getToState } from './config';
+import config from './config';
 import { getIdHash, getQueryHash } from './helpers/hash';
+
+const { getToState } = config;
 
 export function resourceIsLoaded({ resource, id }) {
   return state => !!getToState(state).getIn([resource, 'items', getIdHash(id)]);

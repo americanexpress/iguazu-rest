@@ -1,6 +1,6 @@
 {
   "name": "iguazu-rest",
-  "version": "1.0.0",
+  "version": "1.0.0-0",
   "description": "A redux REST caching library that follows iguazu patterns",
   "main": "index.js",
   "scripts": {

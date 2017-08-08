@@ -11,7 +11,7 @@
     "posttest": "npm run lint"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "jest": {
     "preset": "amex-jest-preset",
     "setupFiles": [

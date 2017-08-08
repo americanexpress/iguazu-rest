@@ -106,7 +106,7 @@ import { queryCollection } from 'iguazu-rest';
 
 const BookList = ({ books }) => (
   <div>
-    {books.map(book => <Book book={book} />)}
+    {books.map(book => <Book key={book.id} book={book} />)}
   </div>
 );
 

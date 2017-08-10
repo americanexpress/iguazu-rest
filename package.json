@@ -2,7 +2,11 @@
   "name": "iguazu-rest",
   "version": "1.0.0-0",
   "description": "A redux REST caching library that follows iguazu patterns",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "src"
+  ],
   "scripts": {
     "build": "babel src --out-dir lib",
     "lint": "eslint --ignore-path .gitignore --ext js,jsx .",

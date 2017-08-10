@@ -5,7 +5,6 @@ const config = {
 
 export function configureIguazuREST(customConfig) {
   Object.assign(config, customConfig);
-  Object.freeze(config);
 }
 
 export default config;

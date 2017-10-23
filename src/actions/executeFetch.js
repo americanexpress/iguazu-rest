@@ -49,7 +49,9 @@ export default function executeFetch({ resource, id, opts, actionType }) {
     dispatch({ type: types[`${actionType}_STARTED`], resource, id, opts, promise });
     const res = await promise;
     const receivedAt = Date.now();
-    const data = await extractDataFromResponse(res);
+    const rawData = await extractDataFromResponse(res);
+    const { transformData } = config.resources[resource];
+    const data = transformData ? transformData(rawData, { id, opts, actionType }) : rawData;
     dispatch({ type: types[`${actionType}_FINISHED`], resource, id, opts, data, receivedAt });
 
     return res.ok ? Promise.resolve(data) : Promise.reject(data);

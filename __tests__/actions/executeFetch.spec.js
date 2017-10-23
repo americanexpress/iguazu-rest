@@ -94,5 +94,27 @@ describe('executeFetch', () => {
         promise.catch(() => 'caught promise error'); // catch promise so unhandled promise doesn't show up in console
       }
     });
+
+    it('should use a data transformer if one is configured', async () => {
+      Object.assign(config, {
+        resources: {
+          users: {
+            fetch: () => ({ url: 'http://api.domain.com/users/:id' }),
+            transformData: (data, { actionType }) =>
+              (actionType === 'LOAD_COLLECTION' ? data.actualCollection : data),
+          },
+        },
+      });
+      fetch.mockResponseOnce(
+        JSON.stringify({
+          some: 'meta',
+          actualCollection: [{ id: '123', name: 'joe' }],
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+      const thunk = executeFetch({ resource, id, opts, actionType: 'LOAD_COLLECTION' });
+      const data = await thunk(dispatch, getState);
+      expect(data).toEqual([{ id: '123', name: 'joe' }]);
+    });
   });
 });

@@ -27,6 +27,8 @@ configureIguazuREST({
       // optionally override the resources id key, defaults to 'id'
       // this is only used to extract the id after a create or to get the ids of the resources in a collection
       idKey: 'userId',
+      // optionally massage the data to be more RESTful, collections need to be lists, resources need to be objects
+      transformData: (data, { id, actionType, state }) => massageDataToBeRESTful(data)
     }
   },
   // opts that will be sent along with every resource request

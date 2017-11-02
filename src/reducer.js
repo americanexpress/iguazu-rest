@@ -90,7 +90,8 @@ export function resourceReducer(state, action) {
       const associatedIds = Object.keys(resourceMap);
       return state.withMutations(resourceState =>
         resourceState
-          .deleteIn(['loading', idHash])
+          .deleteIn(['loading', idHash, queryHash])
+          .update('loading', map => (map.get(idHash).isEmpty() ? map.delete(idHash) : map))
           .mergeIn(['items'], fromJS(resourceMap))
           .setIn(
             ['collections', idHash, queryHash],

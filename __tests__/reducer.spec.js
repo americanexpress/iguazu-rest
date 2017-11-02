@@ -113,9 +113,14 @@ describe('reducer', () => {
         idHash: collectionIdHash,
         data: [{ id: '123' }],
       };
-      const initialState = initialResourceState.setIn(['loading', collectionIdHash], promise);
+      const differentQueryHash = 'someOtherHash';
+      const initialState = initialResourceState.setIn(
+        ['loading', collectionIdHash],
+        iMap({ [queryHash]: promise, [differentQueryHash]: promise })
+      );
       const newState = resourceReducer(initialState, action);
-      expect(newState.getIn(['loading', collectionIdHash])).toBeUndefined();
+      expect(newState.getIn(['loading', collectionIdHash, queryHash])).toBeUndefined();
+      expect(newState.getIn(['loading', collectionIdHash, differentQueryHash])).toBeDefined();
       expect(newState.getIn(['items', resourceIdHash]).toJS()).toEqual({ id: '123' });
       expect(newState.getIn(['collections', collectionIdHash, queryHash]).toJS())
         .toEqual({ associatedIds: [resourceIdHash] });
@@ -132,8 +137,9 @@ describe('reducer', () => {
         idHash: collectionIdHash,
         data: error,
       };
-      const initialState = initialResourceState.setIn(['loading', collectionIdHash], promise);
+      const initialState = initialResourceState.setIn(['loading', collectionIdHash, queryHash], promise);
       const newState = resourceReducer(initialState, action);
+      expect(newState.getIn(['loading', collectionIdHash, queryHash])).toBeUndefined();
       expect(newState.getIn(['loading', collectionIdHash])).toBeUndefined();
       expect(newState.getIn(['collections', collectionIdHash, queryHash]).toJS())
         .toEqual({ associatedIds: [], error });

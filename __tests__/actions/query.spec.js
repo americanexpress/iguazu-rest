@@ -13,6 +13,10 @@ jest.mock('../../src/selectors', () => ({
   collectionIsLoaded: jest.fn(),
 }));
 
+jest.mock('../../src/actions/asyncSideEffects', () => ({
+  handleQueryPromiseRejection: jest.fn(promise => promise.catch(() => { /* swallow */ })),
+}));
+
 const dispatch = jest.fn(input => input);
 const getState = () => 'state';
 const resource = 'users';
@@ -44,12 +48,29 @@ describe('iguazu query actions', () => {
     });
 
     it('should return a loading response if the resource is loaded, but forceFetch is specified', () => {
-      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
+      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       const thunk = queryResource({ resource, id, opts, forceFetch: true });
       const loadResponse = thunk(dispatch, getState);
       expect(loadResponse.data).toEqual('resource');
       expect(loadResponse.status).toEqual('loading');
       expect(loadResponse.promise).toEqual(mockLoadPromise);
+    });
+
+    it('should catch the promise if it rejects, but leave the uncaught promise for ssr', async () => {
+      expect.assertions(2);
+      const handleQueryPromiseRejection = require('../../src/actions/asyncSideEffects').handleQueryPromiseRejection; // eslint-disable-line global-require
+      let promise;
+      try {
+        require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
+        require('../../src/actions/crud').loadResource.mockImplementationOnce(() => Promise.reject('async error')); // eslint-disable-line global-require
+        const thunk = queryResource({ resource, id, opts });
+        const loadResponse = thunk(dispatch, getState);
+        promise = loadResponse.promise;
+        await promise;
+      } catch (e) {
+        expect(handleQueryPromiseRejection).toHaveBeenCalledWith(promise);
+        expect(e).toBe('async error');
+      }
     });
   });
 
@@ -73,12 +94,29 @@ describe('iguazu query actions', () => {
     });
 
     it('should return a loading response if the collection is loaded, but forceFetch is specified', () => {
-      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
+      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       const thunk = queryCollection({ resource, id, opts, forceFetch: true });
       const loadResponse = thunk(dispatch, getState);
       expect(loadResponse.data).toEqual('collection');
       expect(loadResponse.status).toEqual('loading');
       expect(loadResponse.promise).toEqual(mockLoadPromise);
+    });
+
+    it('should catch the promise if it rejects, but leave the uncaught promise for ssr', async () => {
+      expect.assertions(2);
+      const handleQueryPromiseRejection = require('../../src/actions/asyncSideEffects').handleQueryPromiseRejection; // eslint-disable-line global-require
+      let promise;
+      try {
+        require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
+        require('../../src/actions/crud').loadCollection.mockImplementationOnce(() => Promise.reject('async error')); // eslint-disable-line global-require
+        const thunk = queryCollection({ resource, id, opts });
+        const loadResponse = thunk(dispatch, getState);
+        promise = loadResponse.promise;
+        await promise;
+      } catch (e) {
+        expect(handleQueryPromiseRejection).toHaveBeenCalledWith(promise);
+        expect(e).toBe('async error');
+      }
     });
   });
 });

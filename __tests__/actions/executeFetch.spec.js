@@ -3,6 +3,10 @@ import * as types from '../../src/types';
 
 import executeFetch from '../../src/actions/executeFetch';
 
+jest.mock('../../src/actions/asyncSideEffects', () => ({
+  waitAndDispatchFinished: jest.fn(() => 'waitAndDispatchFinishedThunk'),
+}));
+
 Date.now = jest.fn(() => 'now');
 const dispatch = jest.fn();
 const getState = () => {};
@@ -42,21 +46,15 @@ describe('executeFetch', () => {
         'http://api.domain.com/users/123',
         { default: 'opt', method: 'GET', resource: 'opt', some: 'opt' }
       );
+      const promise = Promise.resolve(data);
       expect(dispatch).toHaveBeenCalledWith({
         type: types.LOAD_STARTED,
         resource,
         id,
         opts,
-        promise: Promise.resolve(data),
+        promise,
       });
-      expect(dispatch).toHaveBeenCalledWith({
-        type: types.LOAD_FINISHED,
-        resource,
-        id,
-        opts,
-        data,
-        receivedAt: 'now',
-      });
+      expect(dispatch).toHaveBeenCalledWith('waitAndDispatchFinishedThunk');
     });
 
     it('should handle bad response', async () => {
@@ -82,12 +80,7 @@ describe('executeFetch', () => {
           resource,
           promise,
         });
-        expect(dispatch).toHaveBeenCalledWith({
-          type: types.LOAD_COLLECTION_FINISHED,
-          resource,
-          data: error,
-          receivedAt: 'now',
-        });
+        expect(dispatch).toHaveBeenCalledWith('waitAndDispatchFinishedThunk');
         expect(e).toEqual(error);
         expect(e.status).toEqual(500);
         expect(e.body).toEqual('body');

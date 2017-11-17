@@ -3,6 +3,7 @@ import merge from 'deepmerge';
 import * as types from '../types';
 import { buildFetchUrl } from '../helpers/url';
 import config from '../config';
+import { waitAndDispatchFinished } from './asyncSideEffects';
 
 function startsWith(string, target) {
   return String(string).slice(0, target.length) === target;
@@ -15,8 +16,8 @@ async function extractDataFromResponse(res) {
   const { status } = res;
 
   return res.ok ?
-    body :
-    Object.assign(new Error(`${res.statusText} (${res.url})`), { body, status });
+    Promise.resolve(body) :
+    Promise.reject(Object.assign(new Error(`${res.statusText} (${res.url})`), { body, status }));
 }
 
 const actionTypeMethodMap = {
@@ -27,7 +28,7 @@ const actionTypeMethodMap = {
   DESTROY: 'DELETE',
 };
 
-function getFetchPromise({ resource, id, opts, actionType, state }) {
+async function getAsyncData({ resource, id, opts, actionType, state }) {
   const { resources, defaultOpts, baseFetch } = config;
   const { url, opts: resourceOpts } = resources[resource].fetch(id, actionType, state);
 
@@ -39,21 +40,20 @@ function getFetchPromise({ resource, id, opts, actionType, state }) {
   ]);
   const fetchUrl = buildFetchUrl({ url, id, opts: fetchOpts });
 
-  return baseFetch(fetchUrl, fetchOpts);
+  const res = await baseFetch(fetchUrl, fetchOpts);
+  const rawData = await extractDataFromResponse(res);
+  const { transformData } = config.resources[resource];
+  const data = transformData ? transformData(rawData, { id, opts, actionType }) : rawData;
+
+  return data;
 }
 
 export default function executeFetch({ resource, id, opts, actionType }) {
-  return async (dispatch, getState) => {
-    const promise = getFetchPromise({ resource, id, opts, actionType, state: getState() });
-
+  return (dispatch, getState) => {
+    const promise = getAsyncData({ resource, id, opts, actionType, state: getState() });
     dispatch({ type: types[`${actionType}_STARTED`], resource, id, opts, promise });
-    const res = await promise;
-    const receivedAt = Date.now();
-    const rawData = await extractDataFromResponse(res);
-    const { transformData } = config.resources[resource];
-    const data = transformData ? transformData(rawData, { id, opts, actionType }) : rawData;
-    dispatch({ type: types[`${actionType}_FINISHED`], resource, id, opts, data, receivedAt });
+    dispatch(waitAndDispatchFinished(promise, { type: types[`${actionType}_FINISHED`], resource, id, opts }));
 
-    return res.ok ? Promise.resolve(data) : Promise.reject(data);
+    return promise;
   };
 }

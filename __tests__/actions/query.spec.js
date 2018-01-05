@@ -22,6 +22,7 @@ const getState = () => 'state';
 const resource = 'users';
 const id = '123';
 const opts = 'opts';
+const loadError = new Error('Async Load Error');
 
 describe('iguazu query actions', () => {
   afterEach(() => {
@@ -35,6 +36,7 @@ describe('iguazu query actions', () => {
       const loadResponse = thunk(dispatch, getState);
       expect(loadResponse.data).toEqual('resource');
       expect(loadResponse.status).toEqual('loading');
+      expect(loadResponse.error).toBeFalsy();
       expect(loadResponse.promise).toEqual(mockLoadPromise);
     });
 
@@ -44,6 +46,7 @@ describe('iguazu query actions', () => {
       const loadResponse = thunk(dispatch, getState);
       expect(loadResponse.data).toEqual('resource');
       expect(loadResponse.status).toEqual('complete');
+      expect(loadResponse.error).toBeFalsy();
       expect(loadResponse.promise).toEqual(mockLoadPromise);
     });
 
@@ -53,7 +56,16 @@ describe('iguazu query actions', () => {
       const loadResponse = thunk(dispatch, getState);
       expect(loadResponse.data).toEqual('resource');
       expect(loadResponse.status).toEqual('loading');
+      expect(loadResponse.error).toBeFalsy();
       expect(loadResponse.promise).toEqual(mockLoadPromise);
+    });
+
+    it('should indicate an error occured if applicable', () => {
+      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
+      require('../../src/selectors').getResource.mockImplementationOnce(() => () => loadError); // eslint-disable-line global-require
+      const thunk = queryResource({ resource, id, opts });
+      const loadResponse = thunk(dispatch, getState);
+      expect(loadResponse.error).toBe(loadError);
     });
 
     it('should catch the promise if it rejects, but leave the uncaught promise for ssr', async () => {
@@ -100,6 +112,14 @@ describe('iguazu query actions', () => {
       expect(loadResponse.data).toEqual('collection');
       expect(loadResponse.status).toEqual('loading');
       expect(loadResponse.promise).toEqual(mockLoadPromise);
+    });
+
+    it('should indicate an error occured if applicable', () => {
+      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
+      require('../../src/selectors').getCollection.mockImplementationOnce(() => () => loadError); // eslint-disable-line global-require
+      const thunk = queryCollection({ resource, id, opts });
+      const loadResponse = thunk(dispatch, getState);
+      expect(loadResponse.error).toBe(loadError);
     });
 
     it('should catch the promise if it rejects, but leave the uncaught promise for ssr', async () => {

@@ -14,7 +14,7 @@ export function resourceIsLoaded({ resource, id }) {
 export function getResource({ resource, id }) {
   return (state) => {
     const item = config.getToState(state).getIn([resource, 'items', getResourceIdHash(id)]);
-    return item ? item.toJS() : item;
+    return iMap.isMap(item) ? item.toJS() : item;
   };
 }
 

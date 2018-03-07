@@ -73,6 +73,18 @@ describe('selectors', () => {
       };
       expect(getResource({ resource, id })(state)).toBeUndefined();
     });
+
+    it('should return an error if the resource failed to load', () => {
+      const error = new Error('resource failed to load');
+      const state = {
+        deep: {
+          resources: fromJS({
+            users: { items: { [idHash]: error } },
+          }),
+        },
+      };
+      expect(getResource({ resource, id })(state)).toBe(error);
+    });
   });
 
   describe('resourceIsLoading', () => {

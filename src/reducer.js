@@ -131,7 +131,9 @@ export function resourceReducer(state, action) {
         resourceState
           .update('destroying', map => map.delete(idHash))
           .update('items', map => map.delete(idHash))
-          .update('collections', idMap => idMap.map(queryMap => queryMap.map(m => m.update('associatedIds', ids => ids.delete(ids.indexOf(idHash))))))
+          .update('collections', idMap => idMap.map(queryMap => queryMap.map(m => m.update('associatedIds', ids =>
+            (ids.indexOf(idHash) !== -1 ? ids.delete(ids.indexOf(idHash)) : ids)
+          ))))
       );
     }
 

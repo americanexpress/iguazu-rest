@@ -190,6 +190,33 @@ describe('reducer', () => {
       expect(newState.getIn(['collections', 'idHash', 'queryHash', 'associatedIds']).includes(idHash)).toBe(false);
     });
 
+    it('shouldnt destroy unrelated resources', () => {
+      const promise = Promise.resolve();
+      const deleteId = { id: '123' };
+      const idHash = getResourceIdHash(deleteId);
+
+      const relatedId = { id: '456' };
+      const relatedIdHash = getResourceIdHash(relatedId);
+
+      const action = {
+        type: DESTROY_FINISHED,
+        id: deleteId,
+      };
+      const initialState = initialResourceState
+        .setIn(['destroying', idHash], promise)
+        .set('collections', fromJS({
+          idHash: {
+            queryHash: { associatedIds: [idHash] },
+            relatedQueryHash: { associatedIds: [relatedIdHash] },
+          },
+        }));
+      const newState = resourceReducer(initialState, action);
+      expect(newState.getIn(['destroying', idHash])).toBeUndefined();
+      expect(newState.getIn(['items', idHash])).toBeUndefined();
+      expect(newState.getIn(['collections', 'idHash', 'queryHash', 'associatedIds']).includes(idHash)).toBe(false);
+      expect(newState.getIn(['collections', 'idHash', 'relatedQueryHash', 'associatedIds']).includes(relatedIdHash)).toBe(true);
+    });
+
     it('should return previous state for irrelevant actions', () => {
       const state = 'state';
       const action = { type: 'IRRELEVANT_ACTION' };

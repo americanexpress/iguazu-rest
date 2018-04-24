@@ -44,7 +44,10 @@ export function getCollection({ resource, id, opts }) {
 
     if (error) return error;
 
-    return associatedIds.map(resourceId => resourceState.getIn(['items', resourceId]).toJS());
+    return associatedIds.map((resourceId) => {
+      const item = resourceState.getIn(['items', resourceId]);
+      return iMap.isMap(item) ? item.toJS() : item;
+    });
   };
 }
 

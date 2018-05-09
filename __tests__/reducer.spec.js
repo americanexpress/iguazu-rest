@@ -102,6 +102,22 @@ describe('reducer', () => {
       expect(newState.getIn(['items', idHash]).toJS()).toEqual(data);
     });
 
+    it('should handle storing resource by id object', () => {
+      const promise = Promise.resolve();
+      const idObj = { id: '123', param1: 'a', param2: 'b' };
+      const data = { id: '123', some: 'property' };
+      const idObjHash = getResourceIdHash(idObj);
+      const action = {
+        type: LOAD_FINISHED,
+        id: idObj,
+        data,
+      };
+      const initialState = initialResourceState.setIn(['loading', idObjHash], promise);
+      const newState = resourceReducer(initialState, action);
+      expect(newState.getIn(['loading', idObjHash])).toBeUndefined();
+      expect(newState.getIn(['items', idObjHash]).toJS()).toEqual(data);
+    });
+
     it('should handle LOAD_COLLECTION_FINISHED action with a successful response', () => {
       const promise = Promise.resolve();
       const collectionIdHash = getCollectionIdHash({});

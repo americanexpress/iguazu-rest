@@ -74,6 +74,19 @@ describe('selectors', () => {
       expect(getResource({ resource, id })(state)).toBeUndefined();
     });
 
+    it('should get resource by id object', () => {
+      const idObj = { id: 123, param1: 'a', param2: 'b' };
+      const idObjHash = getResourceIdHash(idObj);
+      const state = {
+        deep: {
+          resources: fromJS({
+            users: { items: { [idObjHash]: { id: '123', data: 'data' } } },
+          }),
+        },
+      };
+      expect(getResource({ resource, id: idObj })(state)).toEqual({ id: '123', data: 'data' });
+    });
+
     it('should return an error if the resource failed to load', () => {
       const error = new Error('resource failed to load');
       const state = {

@@ -13,7 +13,7 @@ export function convertId(originalId) {
 
 export function getResourceIdHash(originalId) {
   const idObj = convertId(originalId);
-  return hash(idObj.id);
+  return hash(idObj);
 }
 
 export function getCollectionIdHash(id) {

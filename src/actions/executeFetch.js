@@ -52,7 +52,7 @@ export default function executeFetch({ resource, id, opts, actionType }) {
   return (dispatch, getState) => {
     const promise = getAsyncData({ resource, id, opts, actionType, state: getState() });
     dispatch({ type: types[`${actionType}_STARTED`], resource, id, opts, promise });
-    dispatch(waitAndDispatchFinished(promise, { type: types[`${actionType}_FINISHED`], resource, id, opts }));
+    dispatch(waitAndDispatchFinished(promise, { type: actionType, resource, id, opts }));
 
     return promise;
   };

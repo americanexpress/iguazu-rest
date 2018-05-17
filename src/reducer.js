@@ -15,10 +15,15 @@ const {
   UPDATE_STARTED,
   DESTROY_STARTED,
   LOAD_FINISHED,
+  LOAD_ERROR,
   LOAD_COLLECTION_FINISHED,
+  LOAD_COLLECTION_ERROR,
   CREATE_FINISHED,
+  CREATE_ERROR,
   UPDATE_FINISHED,
+  UPDATE_ERROR,
   DESTROY_FINISHED,
+  DESTROY_ERROR,
   RESET,
 } = iguazuRestTypes;
 const iguazuRestTypesArray = Object.keys(iguazuRestTypes).map(key => iguazuRestTypes[key]);
@@ -74,6 +79,17 @@ export function resourceReducer(state, action) {
         resourceState
           .update('loading', map => map.delete(idHash))
           .update('items', map => map.set(idHash, iMap(data)))
+          .deleteIn(['error', idHash])
+      );
+    }
+
+    case LOAD_ERROR: {
+      const { id, data } = action;
+      const idHash = getResourceIdHash(id);
+      return state.withMutations(resourceState =>
+        resourceState
+          .update('loading', map => map.delete(idHash))
+          .setIn(['error', idHash], data)
       );
     }
 
@@ -95,11 +111,20 @@ export function resourceReducer(state, action) {
           .mergeIn(['items'], fromJS(resourceMap))
           .setIn(
             ['collections', idHash, queryHash],
-            iMap({
-              associatedIds: iList(associatedIds),
-              error: data instanceof Error ? data : undefined,
-            })
+            iMap({ associatedIds: iList(associatedIds) })
           )
+      );
+    }
+
+    case LOAD_COLLECTION_ERROR: {
+      const { id, data, opts } = action;
+      const idHash = getCollectionIdHash(id);
+      const queryHash = getQueryHash(opts);
+      return state.withMutations(resourceState =>
+        resourceState
+          .deleteIn(['loading', idHash, queryHash])
+          .update('loading', map => (map.get(idHash).isEmpty() ? map.delete(idHash) : map))
+          .setIn(['collections', idHash, queryHash, 'error'], data)
       );
     }
 
@@ -114,6 +139,13 @@ export function resourceReducer(state, action) {
       );
     }
 
+    case CREATE_ERROR: {
+      return state.withMutations(resourceState =>
+        resourceState
+          .set('isCreating', false)
+      );
+    }
+
     case UPDATE_FINISHED: {
       const { id, data } = action;
       const idHash = getResourceIdHash(id);
@@ -121,6 +153,15 @@ export function resourceReducer(state, action) {
         resourceState
           .update('updating', map => map.delete(idHash))
           .update('items', map => map.set(idHash, fromJS(data)))
+      );
+    }
+
+    case UPDATE_ERROR: {
+      const { id } = action;
+      const idHash = getResourceIdHash(id);
+      return state.withMutations(resourceState =>
+        resourceState
+          .update('updating', map => map.delete(idHash))
       );
     }
 
@@ -134,6 +175,15 @@ export function resourceReducer(state, action) {
           .update('collections', idMap => idMap.map(queryMap => queryMap.map(m => m.update('associatedIds', ids =>
             (ids.indexOf(idHash) !== -1 ? ids.delete(ids.indexOf(idHash)) : ids)
           ))))
+      );
+    }
+
+    case DESTROY_ERROR: {
+      const { id } = action;
+      const idHash = getResourceIdHash(id);
+      return state.withMutations(resourceState =>
+        resourceState
+          .update('destroying', map => map.delete(idHash))
       );
     }
 

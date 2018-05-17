@@ -3,6 +3,8 @@ import {
   waitAndDispatchFinished,
 } from '../../src/actions/asyncSideEffects';
 
+import * as types from '../../src/types';
+
 describe('async side effectsQuery', () => {
   describe('handleQueryPromiseRejection', () => {
     it('should catch the passed promise', async () => {
@@ -16,20 +18,20 @@ describe('async side effectsQuery', () => {
 
     it('should dispatch the passed action along with data that was successfully loaded', async () => {
       expect.assertions(1);
-      const action = { type: 'SOME_ACTION' };
+      const action = { type: 'LOAD_RESOURCE' };
       const promise = Promise.resolve('async data');
       const thunk = waitAndDispatchFinished(promise, action);
       await thunk(dispatch);
-      expect(dispatch).toHaveBeenCalledWith({ type: 'SOME_ACTION', data: 'async data' });
+      expect(dispatch).toHaveBeenCalledWith({ type: types.LOAD_RESOURCE_FINISHED, data: 'async data' });
     });
 
     it('should dispatch the passed action along with the error when the load failed', async () => {
       expect.assertions(1);
-      const action = { type: 'SOME_ACTION' };
+      const action = { type: 'LOAD_RESOURCE' };
       const promise = Promise.reject('async error');
       const thunk = waitAndDispatchFinished(promise, action);
       await thunk(dispatch);
-      expect(dispatch).toHaveBeenCalledWith({ type: 'SOME_ACTION', data: 'async error' });
+      expect(dispatch).toHaveBeenCalledWith({ type: types.LOAD_RESOURCE_ERROR, data: 'async error' });
     });
   });
 });

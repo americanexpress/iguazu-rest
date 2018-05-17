@@ -1,3 +1,5 @@
+import * as types from '../types';
+
 /**
  * Some actions which are asynchronous need to act on a promise, but also return the original
  * promise to achieve desired behavior. Moving these asynchronous side effects to their own
@@ -33,10 +35,10 @@ export function waitAndDispatchFinished(promise, action) {
     let data;
     try {
       data = await promise;
+      dispatch(Object.assign({}, action, { type: types[`${action.type}_FINISHED`], data }));
     } catch (e) {
       data = e;
-    } finally {
-      dispatch(Object.assign(action, { data }));
+      dispatch(Object.assign({}, action, { type: types[`${action.type}_ERROR`], data }));
     }
   };
 }

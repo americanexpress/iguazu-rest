@@ -92,7 +92,7 @@ describe('selectors', () => {
       const state = {
         deep: {
           resources: fromJS({
-            users: { items: { [idHash]: error } },
+            users: { error: { [idHash]: error } },
           }),
         },
       };
@@ -182,7 +182,7 @@ describe('selectors', () => {
       expect(getCollection({ resource })(state)).toEqual([{ id: '123', data: 'data' }]);
     });
 
-    it('should return the collection of resources of error', () => {
+    it('should return the collection load error if it failed to load', () => {
       const collectionIdHash = getCollectionIdHash();
       const queryHash = getQueryHash();
       const error = new Error('resource failed to load');
@@ -190,30 +190,18 @@ describe('selectors', () => {
         deep: {
           resources: fromJS({
             users: {
-              items: { 123: error, 234: { id: '123', data: 'data' } },
-              collections: { [collectionIdHash]: { [queryHash]: { associatedIds: ['123', '234'] } } },
+              collections: {
+                [collectionIdHash]: {
+                  [queryHash]: {
+                    error,
+                  },
+                },
+              },
             },
           }),
         },
       };
-      expect(getCollection({ resource })(state)).toEqual([error, { id: '123', data: 'data' }]);
-    });
-
-    it('should return the collection load error if it failed to load', () => {
-      const error = new Error('load error');
-      const collectionIdHash = getCollectionIdHash();
-      const queryHash = getQueryHash();
-      const state = {
-        deep: {
-          resources: fromJS({
-            users: {
-              items: {},
-              collections: { [collectionIdHash]: { [queryHash]: { error } } },
-            },
-          }),
-        },
-      };
-      expect(getCollection({ resource })(state)).toBe(error);
+      expect(getCollection({ resource })(state)).toEqual(error);
     });
   });
 

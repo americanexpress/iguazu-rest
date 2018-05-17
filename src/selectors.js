@@ -13,7 +13,11 @@ export function resourceIsLoaded({ resource, id }) {
 
 export function getResource({ resource, id }) {
   return (state) => {
-    const item = config.getToState(state).getIn([resource, 'items', getResourceIdHash(id)]);
+    const resourceState = config.getToState(state).get(resource, iMap());
+    const error = resourceState.getIn(['error', getResourceIdHash(id)]);
+    if (error) return error;
+
+    const item = resourceState.getIn(['items', getResourceIdHash(id)]);
     return iMap.isMap(item) ? item.toJS() : item;
   };
 }
@@ -39,15 +43,13 @@ export function getCollection({ resource, id, opts }) {
     const resourceState = config.getToState(state).get(resource, iMap());
     const idHash = getCollectionIdHash(id);
     const queryHash = getQueryHash(opts);
-    const { associatedIds, error } =
-      resourceState.getIn(['collections', idHash, queryHash], iMap({ associatedIds: [] })).toJS();
-
+    const error = resourceState.getIn(['collections', idHash, queryHash, 'error']);
     if (error) return error;
 
-    return associatedIds.map((resourceId) => {
-      const item = resourceState.getIn(['items', resourceId]);
-      return iMap.isMap(item) ? item.toJS() : item;
-    });
+    const { associatedIds } =
+      resourceState.getIn(['collections', idHash, queryHash], iMap({ associatedIds: [] })).toJS();
+
+    return associatedIds.map(resourceId => resourceState.getIn(['items', resourceId]).toJS());
   };
 }
 

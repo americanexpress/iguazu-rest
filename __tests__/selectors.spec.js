@@ -113,6 +113,18 @@ describe('selectors', () => {
       expect(resourceIsLoading({ resource, id })(state)).toBe(true);
     });
 
+    it('should return true if the resource is loaded with error', () => {
+      const error = new Error('resource failed to load');
+      const state = {
+        deep: {
+          resources: fromJS({
+            users: { error: { [idHash]: error } },
+          }),
+        },
+      };
+      expect(resourceIsLoaded({ resource, id })(state)).toBe(true);
+    });
+
     it('should return false if the resource is not loading', () => {
       const state = {
         deep: {
@@ -147,6 +159,28 @@ describe('selectors', () => {
         deep: {
           resources: fromJS({
             users: { collections: { [collectionIdHash]: { [queryHash]: ['123'] } } },
+          }),
+        },
+      };
+      expect(collectionIsLoaded({ resource })(state)).toBe(true);
+    });
+
+    it('should return true if the collection is loaded with error', () => {
+      const collectionIdHash = getCollectionIdHash();
+      const queryHash = getQueryHash();
+      const error = new Error('resource failed to load');
+      const state = {
+        deep: {
+          resources: fromJS({
+            users: {
+              collections: {
+                [collectionIdHash]: {
+                  [queryHash]: {
+                    error,
+                  },
+                },
+              },
+            },
           }),
         },
       };

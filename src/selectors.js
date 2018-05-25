@@ -8,7 +8,11 @@ import {
 } from './helpers/hash';
 
 export function resourceIsLoaded({ resource, id }) {
-  return state => !!config.getToState(state).getIn([resource, 'items', getResourceIdHash(id)]);
+  return (state) => {
+    const resourceState = config.getToState(state).get(resource, iMap());
+    const idHash = getResourceIdHash(id);
+    return !!resourceState.getIn(['items', idHash]) || !!resourceState.getIn(['error', idHash]);
+  };
 }
 
 export function getResource({ resource, id }) {

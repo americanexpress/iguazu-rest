@@ -424,4 +424,56 @@ describe('reducer', () => {
       expect(reducer(undefined, action)).toEqual(iMap());
     });
   });
+
+  describe('flows', () => {
+    it('clears the collection loading state after all queries are finished', () => {
+      let state = resourcesReducer(undefined, { type: '@@init' });
+      const optsA = { query: { a: 1 } };
+      const optsB = { query: { b: 2 } };
+      const optsC = { query: { c: 3 } };
+      // start A, B, C
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_STARTED, resource: 'users', id, opts: optsA, promise: Promise.resolve() });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_STARTED, resource: 'users', id, opts: optsB, promise: Promise.resolve() });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_STARTED, resource: 'users', id, opts: optsC, promise: Promise.resolve() });
+      // finish A, C, B to ensure order doesn't matter
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_FINISHED, resource: 'users', id, data: [], opts: optsA });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_FINISHED, resource: 'users', id, data: [], opts: optsC });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_FINISHED, resource: 'users', id, data: [], opts: optsB });
+      expect(state.getIn(['users', 'loading'])).toEqual(iMap());
+    });
+
+    it('does not die on race conditions of successful loads', () => {
+      let state = resourcesReducer(undefined, { type: '@@init' });
+      const optsA = { query: { a: 1 } };
+      const optsB = { query: { b: 2 } };
+      // start A, B, A, B
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_STARTED, resource: 'users', id, opts: optsA, promise: Promise.resolve() });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_STARTED, resource: 'users', id, opts: optsB, promise: Promise.resolve() });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_STARTED, resource: 'users', id, opts: optsA, promise: Promise.resolve() });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_STARTED, resource: 'users', id, opts: optsB, promise: Promise.resolve() });
+      // finish B, B, A, A to ensure order doesn't matter
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_FINISHED, resource: 'users', id, data: [], opts: optsB });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_FINISHED, resource: 'users', id, data: [], opts: optsB });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_FINISHED, resource: 'users', id, data: [], opts: optsA });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_FINISHED, resource: 'users', id, data: [], opts: optsA });
+      expect(state.getIn(['users', 'loading'])).toEqual(iMap());
+    });
+
+    it('does not die on race conditions of unsuccessful loads', () => {
+      let state = resourcesReducer(undefined, { type: '@@init' });
+      const optsA = { query: { a: 1 } };
+      const optsB = { query: { b: 2 } };
+      // start A, B, A, B
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_STARTED, resource: 'users', id, opts: optsA, promise: Promise.resolve() });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_STARTED, resource: 'users', id, opts: optsB, promise: Promise.resolve() });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_STARTED, resource: 'users', id, opts: optsA, promise: Promise.resolve() });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_STARTED, resource: 'users', id, opts: optsB, promise: Promise.resolve() });
+      // finish B, B, A, A to ensure order doesn't matter
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_ERROR, resource: 'users', id, data: new Error('oh no'), opts: optsB });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_ERROR, resource: 'users', id, data: new Error('oh no'), opts: optsB });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_ERROR, resource: 'users', id, data: new Error('oh no'), opts: optsA });
+      state = resourcesReducer(state, { type: LOAD_COLLECTION_ERROR, resource: 'users', id, data: new Error('oh no'), opts: optsA });
+      expect(state.getIn(['users', 'loading'])).toEqual(iMap());
+    });
+  });
 });

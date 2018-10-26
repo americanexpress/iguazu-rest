@@ -111,7 +111,7 @@ export function resourceReducer(state, action) {
 
     case LOAD_COLLECTION_FINISHED: {
       const { id, resource: resourceType, data, opts } = action;
-      const idHash = getCollectionIdHash(id);
+      const collectionIdHash = getCollectionIdHash(id);
       const queryHash = getQueryHash(opts);
       const idKey = getIdKey(resourceType);
       const resourceMap = data instanceof Array ?
@@ -122,11 +122,11 @@ export function resourceReducer(state, action) {
       const associatedIds = Object.keys(resourceMap);
       return state.withMutations(resourceState =>
         resourceState
-          .deleteIn(['loading', idHash, queryHash])
-          .update('loading', map => (map.get(idHash).isEmpty() ? map.delete(idHash) : map))
+          .deleteIn(['loading', collectionIdHash, queryHash])
+          .update('loading', loading => (loading.get(collectionIdHash, iMap()).isEmpty() ? loading.delete(collectionIdHash) : loading))
           .mergeIn(['items'], fromJS(resourceMap))
           .setIn(
-            ['collections', idHash, queryHash],
+            ['collections', collectionIdHash, queryHash],
             iMap({ associatedIds: iList(associatedIds) })
           )
       );
@@ -134,13 +134,13 @@ export function resourceReducer(state, action) {
 
     case LOAD_COLLECTION_ERROR: {
       const { id, data, opts } = action;
-      const idHash = getCollectionIdHash(id);
+      const collectionIdHash = getCollectionIdHash(id);
       const queryHash = getQueryHash(opts);
       return state.withMutations(resourceState =>
         resourceState
-          .deleteIn(['loading', idHash, queryHash])
-          .update('loading', map => (map.get(idHash).isEmpty() ? map.delete(idHash) : map))
-          .setIn(['collections', idHash, queryHash, 'error'], data)
+          .deleteIn(['loading', collectionIdHash, queryHash])
+          .update('loading', map => (map.get(collectionIdHash, iMap()).isEmpty() ? map.delete(collectionIdHash) : map))
+          .setIn(['collections', collectionIdHash, queryHash, 'error'], data)
       );
     }
 

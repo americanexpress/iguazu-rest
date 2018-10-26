@@ -1,4 +1,11 @@
-lib
+# node & npm
 node_modules
-test-results
 *.log
+
+# test
+test-results
+.jest-cache
+
+# build
+lib
+/*.tgz

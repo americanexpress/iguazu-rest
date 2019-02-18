@@ -36,13 +36,14 @@
     "object-hash": "^1.1.8"
   },
   "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "@babel/polyfill": "^7.2.5",
     "amex-jest-preset": "^4.0.1",
-    "babel-cli": "^6.24.1",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-preset-env": "^1.6.0",
+    "babel-preset-amex": "^2.0.0",
     "eslint": "^3.19.0",
     "eslint-config-amex": "^6.0.0",
-    "jest": "^20.0.4",
+    "jest": "^24.1.0",
     "jest-fetch-mock": "^1.2.0"
   }
 }

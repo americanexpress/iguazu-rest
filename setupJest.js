@@ -14,4 +14,7 @@
  * permissions and limitations under the License.
  */
 
-global.fetch = require('jest-fetch-mock'); // eslint-disable-line
+/* eslint import/no-extraneous-dependencies: ["error", { "devDependencies": true }] */
+
+require('@babel/polyfill');
+global.fetch = require('jest-fetch-mock');

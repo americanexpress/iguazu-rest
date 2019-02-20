@@ -21,10 +21,19 @@ export function valuesAsStrings(obj) {
   return iMap(obj).map(v => v.toString()).toJS();
 }
 
+function getIdAsObject(id) {
+  const idType = typeof id;
+  if (idType === 'object' && id !== null) {
+    return id;
+  }
+  if (idType === 'string' || idType === 'number') {
+    return { id };
+  }
+  throw new Error('ID must be an object, number, or string');
+}
+
 export function convertId(originalId) {
-  const idAsObj = typeof originalId === 'object' ? originalId : { id: originalId };
-  const convertedId = valuesAsStrings(idAsObj);
-  return convertedId;
+  return valuesAsStrings(getIdAsObject(originalId));
 }
 
 export function getResourceIdHash(originalId) {

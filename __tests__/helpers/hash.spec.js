@@ -35,6 +35,29 @@ describe('hash helpers', () => {
       expect(getResourceIdHash(123)).toEqual(getResourceIdHash('123'));
       expect(getResourceIdHash({ id: 123 })).toEqual(getResourceIdHash({ id: '123' }));
     });
+
+    describe('when type of id is invalid', () => {
+      it('should throw an error when the id is null', () => {
+        expect(() => getResourceIdHash(null)).toThrowError(
+            new Error('ID must be an object, number, or string')
+        );
+      });
+      it('should throw an error when the id is undefined', () => {
+        expect(() => getResourceIdHash(undefined)).toThrowError(
+            new Error('ID must be an object, number, or string')
+        );
+      });
+      it('should throw an error when the id is a boolean', () => {
+        expect(() => getResourceIdHash(false)).toThrowError(
+            new Error('ID must be an object, number, or string')
+        );
+      });
+      it('should throw an error when the id is a function', () => {
+        expect(() => getResourceIdHash(() => '42')).toThrowError(
+            new Error('ID must be an object, number, or string')
+        );
+      });
+    });
   });
 
   describe('getCollectionIdHash', () => {
@@ -51,6 +74,19 @@ describe('hash helpers', () => {
       expect(getCollectionIdHash({ id: 'abc123', nestedId: 'xyz789' }))
         .toEqual(getCollectionIdHash({ nestedId: 'xyz789', id: 'lmnop456' }));
       expect(getCollectionIdHash('abc123')).toEqual(getCollectionIdHash({ id: 'lmnop456' }));
+    });
+
+    describe('when type of id is invalid', () => {
+      it('should throw an error when the id is a boolean and true', () => {
+        expect(() => getCollectionIdHash(true)).toThrowError(
+            new Error('ID must be an object, number, or string')
+        );
+      });
+      it('should throw an error when the id is a function', () => {
+        expect(() => getCollectionIdHash(() => '42')).toThrowError(
+            new Error('ID must be an object, number, or string')
+        );
+      });
     });
   });
 

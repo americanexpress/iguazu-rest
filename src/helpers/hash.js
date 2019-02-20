@@ -16,6 +16,7 @@
 
 import hash from 'object-hash';
 import { Map as iMap } from 'immutable';
+import { ID_TYPE_ERROR } from '../errors';
 
 export function valuesAsStrings(obj) {
   return iMap(obj).map(v => v.toString()).toJS();
@@ -29,7 +30,7 @@ function getIdAsObject(id) {
   if (idType === 'string' || idType === 'number') {
     return { id };
   }
-  throw new Error('ID must be an object, number, or string');
+  throw new Error(ID_TYPE_ERROR);
 }
 
 export function convertId(originalId) {

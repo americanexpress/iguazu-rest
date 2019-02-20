@@ -23,6 +23,7 @@ import {
   getCollectionIdHash,
   getQueryHash,
 } from './helpers/hash';
+import { ARRAY_RESPONSE_ERROR } from './errors';
 
 const {
   LOAD_STARTED,
@@ -92,10 +93,14 @@ export function resourceReducer(state, action) {
       const { id, data } = action;
       const idHash = getResourceIdHash(id);
       return state.withMutations(resourceState =>
-        resourceState
-          .update('loading', map => map.delete(idHash))
-          .update('items', map => map.set(idHash, iMap(data)))
-          .deleteIn(['error', idHash])
+          (data instanceof Array
+              ? resourceState
+                  .update('loading', map => map.delete(idHash))
+                  .setIn(['error', idHash], new Error(ARRAY_RESPONSE_ERROR))
+              : resourceState
+                  .update('loading', map => map.delete(idHash))
+                  .update('items', map => map.set(idHash, iMap(data)))
+                  .deleteIn(['error', idHash]))
       );
     }
 

@@ -139,6 +139,23 @@ describe('reducer', () => {
       expect(newState.getIn(['items', idObjHash]).toJS()).toEqual(data);
     });
 
+    it('should set in error if data of incorrect array type passed to LOAD_FINISHED', () => {
+      const promise = Promise.resolve();
+      const idObj = { id: '123', param1: 'a', param2: 'b' };
+      const data = [{ id: '123', some: 'property' }];
+      const idObjHash = getResourceIdHash(idObj);
+      const action = {
+        type: LOAD_FINISHED,
+        id: idObj,
+        data,
+      };
+      const initialState = initialResourceState.setIn(['loading', idObjHash], promise);
+      const newState = resourceReducer(initialState, action);
+      expect(newState.getIn(['loading', idObjHash])).toBeUndefined();
+      expect(newState.getIn(['items', idObjHash])).toBeUndefined();
+      expect(newState.getIn(['error', idObjHash])).toEqual(new Error('Resource call must return an object, not an array'));
+    });
+
     it('should reset error on subsequent LOAD_FINISHED success', () => {
       const promise = Promise.resolve();
       const error = new Error('load error');

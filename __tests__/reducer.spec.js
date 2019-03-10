@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-import { fromJS, Map as iMap } from 'immutable';
+import { fromJS, Map as iMap, List as iList } from 'immutable';
 
 import {
   getResourceIdHash,
@@ -38,6 +38,8 @@ import {
   DESTROY_FINISHED,
   DESTROY_ERROR,
   RESET,
+  CLEAR_RESOURCE,
+  CLEAR_COLLECTION,
 } from '../src/types';
 
 import resourcesReducer, {
@@ -123,6 +125,41 @@ describe('reducer', () => {
       expect(newState.getIn(['items', idHash]).toJS()).toEqual(data);
     });
 
+    it('should handle CLEAR_RESOURCE action', () => {
+      const otherId = { id: 456 };
+      const idHash = getResourceIdHash(id);
+      const otherIdHash = getResourceIdHash(otherId);
+      const collectionHash = getCollectionIdHash({});
+      const queryHash = getQueryHash({ param: 'key' });
+
+      const action = {
+        type: CLEAR_RESOURCE,
+        id,
+      };
+      const otherAction = {
+        type: CLEAR_RESOURCE,
+        id: otherId,
+      };
+
+      const initialState = initialResourceState
+        .setIn(['items', idHash], iMap({ prop: 'value' }))
+        .setIn(['items', otherIdHash], iMap({ prop: 'other value' }))
+        .setIn(
+          ['collections', collectionHash, queryHash],
+          iMap({ associatedIds: iList([otherIdHash]) })
+        );
+
+      const newState = resourceReducer(initialState, action);
+      expect(newState.getIn(['loading', idHash])).toBeUndefined();
+      expect(newState.getIn(['items', idHash])).toBeUndefined();
+      expect(newState.getIn(['error', idHash])).toBeUndefined();
+
+      const otherState = resourceReducer(initialState, otherAction);
+      expect(otherState.getIn(['loading', otherIdHash])).toBeUndefined();
+      expect(otherState.getIn(['items', otherIdHash]).toJS()).toEqual({ prop: 'other value' });
+      expect(otherState.getIn(['error', otherIdHash])).toBeUndefined();
+    });
+
     it('should handle storing resource by id object', () => {
       const promise = Promise.resolve();
       const idObj = { id: '123', param1: 'a', param2: 'b' };
@@ -175,7 +212,7 @@ describe('reducer', () => {
     });
 
     it('should handle LOAD_ERROR action', () => {
-      const promise = Promise.resolve();
+      const promise = Promise.resolve('completed');
       const error = new Error('load error');
       const idHash = getResourceIdHash(id);
       const action = {
@@ -187,6 +224,79 @@ describe('reducer', () => {
       const newState = resourceReducer(initialState, action);
       expect(newState.getIn(['loading', idHash])).toBeUndefined();
       expect(newState.getIn(['error', idHash])).toEqual(error);
+    });
+
+    it('handles CLEAR_COLLECTION action when collection exists', () => {
+      const promise = Promise.resolve();
+      const otherId = { id: 456 };
+      const collectionIdHash = getCollectionIdHash({});
+      const resourceIdHash = getResourceIdHash(id);
+      const otherResourceIdHash = getResourceIdHash(otherId);
+      const action = {
+        type: CLEAR_COLLECTION,
+        id: 'someId',
+        resource: 'users',
+        opts: { query: 'value' },
+      };
+      const opts = { query: 'value' };
+      const otherOpts = { query1: 'value1' };
+      const queryHash = getQueryHash(opts);
+      const otherQueryHash = getQueryHash(otherOpts);
+
+      const initialState = initialResourceState
+        .setIn(
+          ['loading', collectionIdHash],
+          iMap({ [queryHash]: promise })
+       )
+        .setIn(
+          ['error', collectionIdHash],
+          iMap({ [queryHash]: 'some error' })
+        )
+        .setIn(
+          ['items', resourceIdHash],
+          iMap({ prop: 'some value' })
+        )
+        .setIn(
+          ['items', otherResourceIdHash],
+          iMap({ prop: 'some other value' })
+        )
+        .setIn(
+          ['collections', collectionIdHash, queryHash],
+          iMap({ associatedIds: iList([resourceIdHash, otherResourceIdHash]) })
+        )
+        .setIn(
+          ['collections', collectionIdHash, otherQueryHash],
+          iMap({ associatedIds: iList([otherResourceIdHash]) })
+        );
+
+      const newState = resourceReducer(initialState, action);
+      expect(newState.getIn(['loading', collectionIdHash, queryHash])).toBeUndefined();
+      expect(newState.getIn(['error', collectionIdHash, queryHash])).toBeUndefined();
+      expect(newState.getIn(['items']).size).toEqual(1);
+      expect(newState.getIn(['items', otherResourceIdHash]).toJS()).toEqual({ prop: 'some other value' });
+      expect(newState.getIn(['collections', collectionIdHash, queryHash])).toBeUndefined();
+      expect(newState.getIn(['collections', collectionIdHash, otherQueryHash])).toBeDefined();
+      expect(newState.getIn(['collections', collectionIdHash, otherQueryHash, 'associatedIds']).toJS())
+        .toEqual([otherResourceIdHash]);
+    });
+
+    it('CLEAR_COLLECTION does not crash if collection does not exist', () => {
+      const collectionIdHash = getCollectionIdHash({});
+      const resourceIdHash = getResourceIdHash(id);
+      const action = {
+        type: CLEAR_COLLECTION,
+        resource: 'users',
+        opts: { query: 'value' },
+      };
+      const opts = { query: 'value' };
+      const queryHash = getQueryHash(opts);
+
+
+      const newState = resourceReducer(initialResourceState, action);
+      expect(newState.getIn(['loading', collectionIdHash, queryHash])).toBeUndefined();
+      expect(newState.getIn(['error', collectionIdHash, queryHash])).toBeUndefined();
+      expect(newState.getIn(['items', resourceIdHash])).toBeUndefined();
+      expect(newState.getIn(['collections', collectionIdHash, queryHash])).toBeUndefined();
     });
 
     it('should handle LOAD_COLLECTION_FINISHED action with a successful response', () => {
@@ -359,8 +469,8 @@ describe('reducer', () => {
       const deleteId = { id: '123' };
       const idHash = getResourceIdHash(deleteId);
 
-      const relatedId = { id: '456' };
-      const relatedIdHash = getResourceIdHash(relatedId);
+      const associatedId = { id: '456' };
+      const associatedIdHash = getResourceIdHash(associatedId);
 
       const action = {
         type: DESTROY_FINISHED,
@@ -371,14 +481,14 @@ describe('reducer', () => {
         .set('collections', fromJS({
           idHash: {
             queryHash: { associatedIds: [idHash] },
-            relatedQueryHash: { associatedIds: [relatedIdHash] },
+            relatedQueryHash: { associatedIds: [associatedIdHash] },
           },
         }));
       const newState = resourceReducer(initialState, action);
       expect(newState.getIn(['destroying', idHash])).toBeUndefined();
       expect(newState.getIn(['items', idHash])).toBeUndefined();
       expect(newState.getIn(['collections', 'idHash', 'queryHash', 'associatedIds']).includes(idHash)).toBe(false);
-      expect(newState.getIn(['collections', 'idHash', 'relatedQueryHash', 'associatedIds']).includes(relatedIdHash)).toBe(true);
+      expect(newState.getIn(['collections', 'idHash', 'relatedQueryHash', 'associatedIds']).includes(associatedIdHash)).toBe(true);
     });
 
     it('should handle DESTROY_ERROR action', () => {

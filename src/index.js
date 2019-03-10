@@ -32,6 +32,11 @@ import {
   getCollection,
 } from './selectors';
 
+import {
+  clearResource,
+  clearCollection,
+} from './actions/clear';
+
 import resourcesReducer from './reducer';
 
 import { configureIguazuREST } from './config';
@@ -47,6 +52,8 @@ export {
   queryCollection,
   getResource,
   getCollection,
+  clearResource,
+  clearCollection,
   resourcesReducer,
   configureIguazuREST,
 };

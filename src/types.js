@@ -31,3 +31,5 @@ export const UPDATE_ERROR = '@@iguazu-rest/UPDATE_ERROR';
 export const DESTROY_FINISHED = '@@iguazu-rest/DESTROY_FINISHED';
 export const DESTROY_ERROR = '@@iguazu-rest/DESTROY_ERROR';
 export const RESET = '@@iguazu-rest/RESET';
+export const CLEAR_RESOURCE = '@@iguazu-rest/CLEAR_RESOURCE';
+export const CLEAR_COLLECTION = '@@iguazu-rest/CLEAR_COLLECTION';

@@ -187,6 +187,14 @@ These actions return a promise that resolves with the fetched data on successful
 ##### `getResource({ resource, id })(state)`
 ##### `getCollection({ resource, id, opts })(state)`
 
+### Cleaning Actions
+##### `clearResource({ resource, id, opts })`
+##### `clearCollection({ resource, id, opts })`
+
+These actions allow you to remove the associated data to a resource or collection from the state tree without performing any operation on the remote resource itself.
+* resources associated to a collection will only be removed if no other collection is using that same resource
+* individual resources will only be removed if they are not associated to any collection 
+
 ### Query opts
 iguazu-rest allows you to specify your query parameters as part of the opts passed to fetch. If they are used to filter a collection, make sure they are passed in this way instead of adding them directly to the url because it is necessary for proper caching. All of the resources get normalized, so iguazu-rest needs to a way to cache which resources came back for a set of query parameters.
 

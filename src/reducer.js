@@ -41,6 +41,8 @@ const {
   UPDATE_ERROR,
   DESTROY_FINISHED,
   DESTROY_ERROR,
+  CLEAR_RESOURCE,
+  CLEAR_COLLECTION,
   RESET,
 } = iguazuRestTypes;
 const iguazuRestTypesArray = Object.keys(iguazuRestTypes).map(key => iguazuRestTypes[key]);
@@ -48,6 +50,7 @@ const iguazuRestTypesArray = Object.keys(iguazuRestTypes).map(key => iguazuRestT
 function getIdKey(resource) {
   return config.resources[resource].idKey || 'id';
 }
+
 
 export const initialResourceState = iMap({
   items: iMap(),
@@ -104,6 +107,30 @@ export function resourceReducer(state, action) {
       );
     }
 
+    case CLEAR_RESOURCE: {
+      const { id } = action;
+      const idHash = getResourceIdHash(id);
+      return state.withMutations((resourceState) => {
+        const withCollection = resourceState
+          .get('collections', iList())
+          .toIndexedSeq()
+          .flatMap(eachCollection => eachCollection.toIndexedSeq())
+          .flatMap(eachRelatedQueryHash => eachRelatedQueryHash.toIndexedSeq())
+          .flatMap(eachRelatedResourceCollection => eachRelatedResourceCollection.toIndexedSeq())
+            .contains(idHash);
+
+        if (withCollection) {
+          return resourceState;
+        }
+
+        return resourceState
+          .update('loading', map => map.delete(idHash))
+          .update('items', map => map.delete(idHash))
+          .deleteIn(['error', idHash]);
+      }
+      );
+    }
+
     case LOAD_ERROR: {
       const { id, data } = action;
       const idHash = getResourceIdHash(id);
@@ -135,6 +162,31 @@ export function resourceReducer(state, action) {
             iMap({ associatedIds: iList(associatedIds) })
           )
       );
+    }
+
+    case CLEAR_COLLECTION: {
+      const { id, opts } = action;
+      const collectionIdHash = getCollectionIdHash(id);
+      const queryHash = getQueryHash(opts);
+      return state.withMutations((resourceState) => {
+        const collections = resourceState.get('collections', iMap());
+        const myCollection = collections.getIn([collectionIdHash, queryHash, 'associatedIds'], iList());
+        const combinedIds = collections.removeIn([collectionIdHash, queryHash])
+          .toIndexedSeq()
+          .flatMap(eachCollection => eachCollection.toIndexedSeq())
+          .flatMap(eachRelatedQueryHash => eachRelatedQueryHash.toIndexedSeq())
+          .flatMap(eachRelatedResourceCollection => eachRelatedResourceCollection.toIndexedSeq());
+
+        const toDelete = myCollection.filterNot(associatedId => combinedIds.contains(associatedId));
+
+        return (
+          toDelete
+            .reduce((newState, associatedId) => newState.deleteIn(['items', associatedId]), resourceState)
+            .deleteIn(['error', collectionIdHash, queryHash])
+            .deleteIn(['loading', collectionIdHash, queryHash])
+            .deleteIn(['collections', collectionIdHash, queryHash])
+        );
+      });
     }
 
     case LOAD_COLLECTION_ERROR: {

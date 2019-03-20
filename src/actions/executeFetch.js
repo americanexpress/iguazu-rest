@@ -44,7 +44,7 @@ const actionTypeMethodMap = {
   DESTROY: 'DELETE',
 };
 
-async function getAsyncData({ resource, id, opts, actionType, state }) {
+async function getAsyncData({ resource, id, opts, actionType, state, fetchClient }) {
   const { resources, defaultOpts, baseFetch } = config;
   const { url, opts: resourceOpts } = resources[resource].fetch(id, actionType, state);
 
@@ -56,7 +56,9 @@ async function getAsyncData({ resource, id, opts, actionType, state }) {
   ]);
   const fetchUrl = buildFetchUrl({ url, id, opts: fetchOpts });
 
-  const res = await baseFetch(fetchUrl, fetchOpts);
+  const selectedFetchClient = fetchClient || baseFetch;
+
+  const res = await selectedFetchClient(fetchUrl, fetchOpts);
   const rawData = await extractDataFromResponse(res);
   const { transformData } = config.resources[resource];
   const data = transformData ? transformData(rawData, { id, opts, actionType }) : rawData;
@@ -65,8 +67,15 @@ async function getAsyncData({ resource, id, opts, actionType, state }) {
 }
 
 export default function executeFetch({ resource, id, opts, actionType }) {
-  return (dispatch, getState) => {
-    const promise = getAsyncData({ resource, id, opts, actionType, state: getState() });
+  return (dispatch, getState, { fetchClient } = {}) => {
+    const promise = getAsyncData({
+      resource,
+      id,
+      opts,
+      actionType,
+      state: getState(),
+      fetchClient,
+    });
     dispatch({ type: types[`${actionType}_STARTED`], resource, id, opts, promise });
     dispatch(waitAndDispatchFinished(promise, { type: actionType, resource, id, opts }));
 

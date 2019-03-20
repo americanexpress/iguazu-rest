@@ -1,14 +1,15 @@
 # Iguazu REST
-A redux REST caching library that follows Iguazu patterns.
+A Redux REST caching library that follows Iguazu patterns.
 
 ## Usage
-### config
+
+### Config
 Iguazu REST uses a config object that allows you to register resources and provide default and override behavior.
 
-
-
 ```javascript
-import { configureIguazuREST } from 'iguazu-rest';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { configureIguazuREST, resourcesReducer } from 'iguazu-rest'
+import thunk from 'redux-thunk';
 
 configureIguazuREST({
   // the resources you want cached
@@ -43,6 +44,52 @@ configureIguazuREST({
   // override state location, defaults to state.resources
   getToState: (state) => state.data.resources
 });
+
+const store = createStore(
+  combineReducers({
+    resources: resourcesReducer,
+  }),
+  applyMiddleware(thunk)
+)
+```
+
+### Advanced Config
+
+You may also supply a custom `fetch` client to iguazu-rest using Redux Thunk.
+This will *override* any `baseFetch` configuration in Iguazu REST with the
+`thunk` supplied fetch client. (See [Thunk withExtraArgument
+docs](https://github.com/reduxjs/redux-thunk#injecting-a-custom-argument))
+
+This approach allows for the client and the server to specify different `fetch`
+implementations. For example, the server needs to support cookies inside a
+server-side fetch versus the client-side which works with cookies by default.
+Thunk-provided `fetchClient` overrides `baseFetch` as the concerns of the
+environment are more important such as providing cookie support on the server or
+enforcing request timeouts.
+
+```javascript
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { configureIguazuREST, resourcesReducer } from 'iguazu-rest';
+import thunk from 'redux-thunk';
+
+configureIguazuREST({
+  // Assume configuration from above...
+
+  // Overriden by thunk.withExtraArgument below
+  baseFetch: fetchWith6sTimeout,
+})
+
+/* Contrived custom fetch client */
+const customFetchClient = (...args) => fetch(...args)
+
+const store = createStore(
+  combineReducers({
+    resources: resourcesReducer,
+  }),
+  applyMiddleware(thunk.withExtraArgument({
+    fetchClient: customFetchClient
+  }))
+);
 ```
 
 #### Resource Fetch Function

@@ -1,6 +1,9 @@
 # Iguazu REST
 A Redux REST caching library that follows Iguazu patterns.
 
+> Want to get paid for your contributions to `iguazu-rest`?
+> Send your resume to oneamex.careers@aexp.com
+
 ## Usage
 
 ### Config

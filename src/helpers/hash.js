@@ -18,6 +18,10 @@ import hash from 'object-hash';
 import { Map as iMap } from 'immutable';
 import { ID_TYPE_ERROR } from '../errors';
 
+function hashWithoutPrototypes(obj) {
+  return hash(obj, { respectType: false });
+}
+
 export function valuesAsStrings(obj) {
   return iMap(obj).map(v => v.toString()).toJS();
 }
@@ -39,19 +43,19 @@ export function convertId(originalId) {
 
 export function getResourceIdHash(originalId) {
   const idObj = convertId(originalId);
-  return hash(idObj);
+  return hashWithoutPrototypes(idObj);
 }
 
 export function getCollectionIdHash(id) {
   if (id) {
     const idObj = convertId(id);
     delete idObj.id;
-    return hash(idObj);
+    return hashWithoutPrototypes(idObj);
   }
 
-  return hash({});
+  return hashWithoutPrototypes({});
 }
 
 export function getQueryHash(opts = {}) {
-  return hash(opts.query || {});
+  return hashWithoutPrototypes(opts.query || {});
 }

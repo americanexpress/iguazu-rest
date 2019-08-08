@@ -188,6 +188,7 @@ export default connectAsync({ loadDataAsProps })(BookList);
 ##### `createResource({ resource, id, opts })`
 ##### `updateResource({ resource, id, opts })`
 ##### `destroyResource({ resource, id, opts })`
+##### `patchResource({ resource, id, opts })`
 
 These actions return a promise that resolves with the fetched data on successful requests and reject with an error on unsuccessful requests. The error also contains the status and the body if you need to inspect those.
 

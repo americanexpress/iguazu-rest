@@ -31,6 +31,7 @@ const {
   CREATE_STARTED,
   UPDATE_STARTED,
   DESTROY_STARTED,
+  PATCH_STARTED,
   LOAD_FINISHED,
   LOAD_ERROR,
   LOAD_COLLECTION_FINISHED,
@@ -44,6 +45,8 @@ const {
   CLEAR_RESOURCE,
   CLEAR_COLLECTION,
   RESET,
+  PATCH_FINISHED,
+  PATCH_ERROR,
 } = iguazuRestTypes;
 const iguazuRestTypesArray = Object.keys(iguazuRestTypes).map(key => iguazuRestTypes[key]);
 
@@ -90,6 +93,12 @@ export function resourceReducer(state, action) {
       const { id, promise } = action;
       const idHash = getResourceIdHash(id);
       return state.update('destroying', map => map.set(idHash, promise));
+    }
+
+    case PATCH_STARTED: {
+      const { id, promise } = action;
+      const idHash = getResourceIdHash(id);
+      return state.update('updating', map => map.set(idHash, promise));
     }
 
     case LOAD_FINISHED: {
@@ -257,6 +266,25 @@ export function resourceReducer(state, action) {
       return state.withMutations(resourceState =>
         resourceState
           .update('destroying', map => map.delete(idHash))
+      );
+    }
+
+    case PATCH_FINISHED: {
+      const { id, data } = action;
+      const idHash = getResourceIdHash(id);
+      return state.withMutations(resourceState =>
+        resourceState
+          .update('updating', map => map.delete(idHash))
+          .update('items', map => map.set(idHash, fromJS(data)))
+      );
+    }
+
+    case PATCH_ERROR: {
+      const { id } = action;
+      const idHash = getResourceIdHash(id);
+      return state.withMutations(resourceState =>
+        resourceState
+          .update('updating', map => map.delete(idHash))
       );
     }
 

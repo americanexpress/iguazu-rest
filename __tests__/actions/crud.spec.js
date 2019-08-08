@@ -20,6 +20,7 @@ import {
   createResource,
   updateResource,
   destroyResource,
+  patchResource,
 } from '../../src/actions/crud';
 
 jest.mock('../../src/selectors', () => ({
@@ -195,6 +196,15 @@ describe('CRUD actions', () => {
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
       expect(executeFetch).toHaveBeenCalledWith({ resource, id, opts, actionType: 'DESTROY' });
+    });
+  });
+
+  describe('patch', () => {
+    it('should patch an existing resource', async () => {
+      const thunk = patchResource({ resource, id, opts });
+      await thunk(dispatch, getState);
+      expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
+      expect(executeFetch).toHaveBeenCalledWith({ resource, id, opts, actionType: 'PATCH' });
     });
   });
 });

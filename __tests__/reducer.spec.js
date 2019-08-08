@@ -27,6 +27,7 @@ import {
   CREATE_STARTED,
   UPDATE_STARTED,
   DESTROY_STARTED,
+  PATCH_STARTED,
   LOAD_FINISHED,
   LOAD_ERROR,
   LOAD_COLLECTION_FINISHED,
@@ -40,6 +41,8 @@ import {
   RESET,
   CLEAR_RESOURCE,
   CLEAR_COLLECTION,
+  PATCH_FINISHED,
+  PATCH_ERROR,
 } from '../src/types';
 
 import resourcesReducer, {
@@ -108,6 +111,17 @@ describe('reducer', () => {
       };
       const newState = resourceReducer(initialResourceState, action);
       expect(newState.getIn(['destroying', getResourceIdHash(id)])).toEqual(promise);
+    });
+
+    it('should handle PATCH_STARTED action', () => {
+      const promise = Promise.resolve();
+      const action = {
+        type: PATCH_STARTED,
+        id,
+        promise,
+      };
+      const newState = resourceReducer(initialResourceState, action);
+      expect(newState.getIn(['updating', getResourceIdHash(id)])).toEqual(promise);
     });
 
     it('should handle LOAD_FINISHED action', () => {
@@ -516,6 +530,35 @@ describe('reducer', () => {
       const state = 'state';
       const action = { type: 'IRRELEVANT_ACTION' };
       expect(resourceReducer(state, action)).toEqual(state);
+    });
+
+    it('should handle PATCH_FINISHED action', () => {
+      const promise = Promise.resolve();
+      const idHash = getResourceIdHash(id);
+      const action = {
+        type: PATCH_FINISHED,
+        id,
+        data: { id: '123' },
+      };
+      const initialState = initialResourceState.setIn(['updating', idHash], promise);
+      const newState = resourceReducer(initialState, action);
+      expect(newState.getIn(['updating', idHash])).toBeUndefined();
+      expect(newState.getIn(['items', idHash]).toJS()).toEqual({ id: '123' });
+    });
+
+    it('should handle PATCH_ERROR action', () => {
+      const promise = Promise.resolve();
+      const error = new Error('load error');
+      const idHash = getResourceIdHash(id);
+      const action = {
+        type: PATCH_ERROR,
+        id,
+        data: error,
+      };
+      const initialState = initialResourceState.setIn(['updating', idHash], promise);
+      const newState = resourceReducer(initialState, action);
+      expect(newState.getIn(['updating', idHash])).toBeUndefined();
+      expect(newState.getIn(['items', idHash])).toBeUndefined();
     });
   });
 

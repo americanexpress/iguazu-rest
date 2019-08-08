@@ -20,6 +20,7 @@ import {
   createResource,
   updateResource,
   destroyResource,
+  patchResource,
 } from './actions/crud';
 
 import {
@@ -47,6 +48,7 @@ export {
   loadCollection,
   createResource,
   updateResource,
+  patchResource,
   destroyResource,
   queryResource,
   queryCollection,

@@ -42,6 +42,7 @@ const actionTypeMethodMap = {
   CREATE: 'POST',
   UPDATE: 'PUT',
   DESTROY: 'DELETE',
+  PATCH: 'PATCH',
 };
 
 async function getAsyncData({ resource, id, opts, actionType, state, fetchClient }) {

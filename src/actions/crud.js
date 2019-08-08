@@ -71,3 +71,7 @@ export function updateResource({ resource, id, opts }) {
 export function destroyResource({ resource, id, opts }) {
   return dispatch => dispatch(executeFetch({ resource, id, opts, actionType: 'DESTROY' }));
 }
+
+export function patchResource({ resource, id, opts }) {
+  return dispatch => dispatch(executeFetch({ resource, id, opts, actionType: 'PATCH' }));
+}

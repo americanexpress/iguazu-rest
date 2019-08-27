@@ -20,6 +20,10 @@
     "Andrew Curtis <andrew.curtis@aexp.com>"
   ],
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/americanexpress/iguazu-rest.git"
+  },
   "jest": {
     "preset": "amex-jest-preset",
     "setupFiles": [

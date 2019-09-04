@@ -103,6 +103,14 @@ In an ideal world, your REST API follows all the [right patterns and best practi
 * [`actionType`] \(String): The type of CRUD action. Will be one of `LOAD`, `LOAD_COLLECTION`, `CREATE`, `UPDATE`, `DESTROY`.
 * [`state`] \(Object): The redux state. Useful if you need to use some config held in state. Keep in mind that you should not use this to grab any unique identifiers as the id argument is what is used to cache.
 
+#### Collections
+
+To use the functions that operate on collections, your API and config needs to meet some basic requirements:
+
+* The URL specified on the `fetch` config should return the full collection when the `/:id` is omitted. 
+* The API must return an array of resource objects. If it returns an object (common in paged APIs), you can use the `transformData` config function to return the array field of the object instead.
+* Each object in the array must have a unique ID field, normally named `id`.  If it is not named `id`, then the field name must be set in the `idKey` prop on the resource config. 
+
 ### Reducer
 ```javascript
 import { resourcesReducer } from 'iguazu-rest'

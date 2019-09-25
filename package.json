@@ -45,7 +45,7 @@
     "@babel/polyfill": "^7.2.5",
     "amex-jest-preset": "^4.0.1",
     "babel-preset-amex": "^2.0.0",
-    "eslint": "^3.19.0",
+    "eslint": "^4.18.2",
     "eslint-config-amex": "^6.0.0",
     "jest": "^24.1.0",
     "jest-fetch-mock": "^1.2.0"

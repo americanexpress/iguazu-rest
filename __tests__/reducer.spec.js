@@ -247,7 +247,7 @@ describe('reducer', () => {
         .setIn(
           ['loading', collectionIdHash],
           iMap({ [queryHash]: promise })
-       )
+        )
         .setIn(
           ['error', collectionIdHash],
           iMap({ [queryHash]: 'some error' })

@@ -101,7 +101,7 @@ export function replaceUrlParams({ url, id }) {
     }
     return replaceUrlParamFromUrl(wipUrl, urlParam);
   }, url)
-  .replace(/\/+$/, ''); // strip trailing slashes
+    .replace(/\/+$/, ''); // strip trailing slashes
 }
 
 export function buildFetchUrl({ url, id, opts }) {

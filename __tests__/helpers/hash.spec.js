@@ -39,22 +39,22 @@ describe('hash helpers', () => {
     describe('when type of id is invalid', () => {
       it('should throw an error when the id is null', () => {
         expect(() => getResourceIdHash(null)).toThrowError(
-            new Error('ID must be an object, number, or string')
+          new Error('ID must be an object, number, or string')
         );
       });
       it('should throw an error when the id is undefined', () => {
         expect(() => getResourceIdHash(undefined)).toThrowError(
-            new Error('ID must be an object, number, or string')
+          new Error('ID must be an object, number, or string')
         );
       });
       it('should throw an error when the id is a boolean', () => {
         expect(() => getResourceIdHash(false)).toThrowError(
-            new Error('ID must be an object, number, or string')
+          new Error('ID must be an object, number, or string')
         );
       });
       it('should throw an error when the id is a function', () => {
         expect(() => getResourceIdHash(() => '42')).toThrowError(
-            new Error('ID must be an object, number, or string')
+          new Error('ID must be an object, number, or string')
         );
       });
     });
@@ -79,12 +79,12 @@ describe('hash helpers', () => {
     describe('when type of id is invalid', () => {
       it('should throw an error when the id is a boolean and true', () => {
         expect(() => getCollectionIdHash(true)).toThrowError(
-            new Error('ID must be an object, number, or string')
+          new Error('ID must be an object, number, or string')
         );
       });
       it('should throw an error when the id is a function', () => {
         expect(() => getCollectionIdHash(() => '42')).toThrowError(
-            new Error('ID must be an object, number, or string')
+          new Error('ID must be an object, number, or string')
         );
       });
     });

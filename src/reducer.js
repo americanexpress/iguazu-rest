@@ -96,14 +96,14 @@ export function resourceReducer(state, action) {
       const { id, data } = action;
       const idHash = getResourceIdHash(id);
       return state.withMutations(resourceState =>
-          (data instanceof Array
-              ? resourceState
-                  .update('loading', map => map.delete(idHash))
-                  .setIn(['error', idHash], new Error(ARRAY_RESPONSE_ERROR))
-              : resourceState
-                  .update('loading', map => map.delete(idHash))
-                  .update('items', map => map.set(idHash, iMap(data)))
-                  .deleteIn(['error', idHash]))
+        (data instanceof Array
+          ? resourceState
+            .update('loading', map => map.delete(idHash))
+            .setIn(['error', idHash], new Error(ARRAY_RESPONSE_ERROR))
+          : resourceState
+            .update('loading', map => map.delete(idHash))
+            .update('items', map => map.set(idHash, iMap(data)))
+            .deleteIn(['error', idHash]))
       );
     }
 
@@ -117,7 +117,7 @@ export function resourceReducer(state, action) {
           .flatMap(eachCollection => eachCollection.toIndexedSeq())
           .flatMap(eachRelatedQueryHash => eachRelatedQueryHash.toIndexedSeq())
           .flatMap(eachRelatedResourceCollection => eachRelatedResourceCollection.toIndexedSeq())
-            .contains(idHash);
+          .contains(idHash);
 
         if (withCollection) {
           return resourceState;

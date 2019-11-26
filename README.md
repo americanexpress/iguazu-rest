@@ -175,7 +175,7 @@ const BookList = ({ books }) => (
 function loadDataAsProps({ store: { dispatch }, ownProps: { authorId } }) {
   return {
     books: () =>
-      dispatch(queryCollection( resource: 'book', id: { authorId } ))
+      dispatch(queryCollection({ resource: 'book', id: { authorId } }))
   }
 }
 

@@ -23,7 +23,7 @@ function hashWithoutPrototypes(obj) {
 }
 
 export function valuesAsStrings(obj) {
-  return iMap(obj).map(v => v.toString()).toJS();
+  return iMap(obj).map((v) => v.toString()).toJS();
 }
 
 function getIdAsObject(id) {

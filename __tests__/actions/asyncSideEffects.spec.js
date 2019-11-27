@@ -44,10 +44,11 @@ describe('async side effectsQuery', () => {
     it('should dispatch the passed action along with the error when the load failed', async () => {
       expect.assertions(1);
       const action = { type: 'LOAD_RESOURCE' };
-      const promise = Promise.reject('async error');
+      const error = new Error('async error');
+      const promise = Promise.reject(error);
       const thunk = waitAndDispatchFinished(promise, action);
       await thunk(dispatch);
-      expect(dispatch).toHaveBeenCalledWith({ type: types.LOAD_RESOURCE_ERROR, data: 'async error' });
+      expect(dispatch).toHaveBeenCalledWith({ type: types.LOAD_RESOURCE_ERROR, data: error });
     });
   });
 });

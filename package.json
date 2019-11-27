@@ -1,35 +1,62 @@
 {
   "name": "iguazu-rest",
   "version": "1.7.0",
-  "description": "A redux REST caching library that follows iguazu patterns",
+  "description": "A Redux REST caching library that follows Iguazu patterns",
   "main": "lib/index.js",
   "files": [
     "lib"
   ],
   "scripts": {
     "build": "babel src --out-dir lib",
-    "lint": "eslint --ignore-path .gitignore --ext js,jsx .",
+    "lint": "eslint --ignore-path .gitignore --ext js,jsx,md .",
     "prepublish": "npm run build",
-    "test": "jest",
+    "test": "jest && commitlint --from origin/master --to HEAD",
     "posttest": "npm run lint"
   },
   "author": "Maia Teegarden",
   "contributors": [
-    "Nickolas Oliver <nickolas.oliver@aexp.com>",
-    "Andrew Curtis <andrew.curtis@aexp.com>"
+    "Andres Escobar <Andres.Escobar@aexp.com> (https://github.com/anescobar1991)",
+    "James Singleton <James.Singleton1@aexp.com> https://github.com/JamesSingleton)",
+    "Jimmy King  <Jimmy.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
+    "Jonathan Adshead <Jonathan.Adshead@aexp.com> (https://github.com/JAdshead)",
+    "Michael Tobia <Michael.M.Tobia@aexp.com> (https://github.com/Francois-Esquire)",
+    "Michael Tomcal <Michael.A.Tomcal@aexp.com> (https://github.com/mtomcal))",
+    "Stephanie Coates  <Stephanie.Coates1@aexp.com> (https://github.com/stephaniecoates)",
+    "Nelly Kiboi <Nelly.J.Kiboi@aexp.com> (https://github.com/nellyk)",
+    "Nickolas Oliver <nickolas.oliver@aexp.com> (https://github.com/PixnBits)",
+    "Andrew Curtis <andrew.curtis@aexp.com> (https://github.com/drewcur)",
+    "Scott McIntyre <scott.mcintyre@aexp.com> (https://github.com/smackfu)"
   ],
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/americanexpress/iguazu-rest.git"
   },
+  "homepage": "https://github.com/americanexpress/iguazu-rest",
+  "bugs": {
+    "url": "https://github.com/americanexpress/iguazu-rest/issues"
+  },
+  "keywords": [
+    "async",
+    "react",
+    "redux",
+    "react-redux",
+    "fetch",
+    "data",
+    "rest",
+    "resource",
+    "crud",
+    "iguazu",
+    "adapter"
+  ],
   "jest": {
     "preset": "amex-jest-preset",
     "setupFiles": [
       "./setupJest.js"
     ],
     "coveragePathIgnorePatterns": [
-      "./setupJest.js"
+      "./setupJest.js",
+      "./commitlint.config.js"
     ]
   },
   "dependencies": {
@@ -39,14 +66,43 @@
     "object-hash": "^1.3.1"
   },
   "devDependencies": {
+    "semantic-release": "^15.13.31",
+    "@semantic-release/changelog": "^3.0.5",
+    "@semantic-release/commit-analyzer": "^6.3.2",
+    "@semantic-release/git": "^7.0.18",
+    "@semantic-release/npm": "^5.3.4",
+    "@semantic-release/release-notes-generator": "^7.3.2",
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
+    "husky": "^3.0.9",
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.3",
     "@babel/polyfill": "^7.2.5",
-    "amex-jest-preset": "^4.0.1",
-    "babel-preset-amex": "^2.0.0",
-    "eslint": "^4.18.2",
-    "eslint-config-amex": "^6.0.0",
+    "amex-jest-preset": "^5.0.0",
+    "core-js-compat": "3.4.5",
+    "babel-jest": "^24.1.0",
+    "babel-preset-amex": "^3.2.0",
+    "eslint": "^6.5.0",
+    "eslint-config-amex": "^11.1.0",
     "jest": "^24.1.0",
-    "jest-fetch-mock": "^1.2.0"
+    "jest-fetch-mock": "^1.2.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/git",
+      "@semantic-release/npm"
+    ],
+    "branch": "master"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }

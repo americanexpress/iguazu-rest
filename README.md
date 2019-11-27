@@ -1,17 +1,53 @@
-# Iguazu REST
-A Redux REST caching library that follows Iguazu patterns.
+<h1>
+  <center>
+    <br />
+    <img src="./iguazu-rest.png" alt="iguazu-rest - Iguazu" width="50%" />
+    <br /><br />
+  </center>
+</h1>
 
-> Want to get paid for your contributions to `iguazu-rest`?
+[![npm version](https://badge.fury.io/js/iguazu-rest.svg)](https://badge.fury.io/js/iguazu-rest)
+[![Build Status](https://travis-ci.org/americanexpress/iguazu-rest.svg?branch=master)](https://travis-ci.org/americanexpress/iguazu-rest)
+
+> Iguazu REST is a plugin for the [Iguazu](https://github.com/americanexpress/iguazu)
+> ecosystem that allows for pre-built async calls for REST with smart caching in Redux.
+> If your API uses RESTful patterns, this library will save you time to perform
+> CRUD actions. If your API does not follow REST patterns, check out [Iguazu RPC](https://github.com/americanexpress/iguazu-rpc).
+
+## 👩‍💻 Hiring 👨‍💻
+
+Want to get paid for your contributions to `iguazu-rest`?
 > Send your resume to oneamex.careers@aexp.com
 
-## Usage
+## 📖 Table of Contents
+
+* [Features](#-features)
+* [Usage](#-usage)
+* [API](#-api)
+* [Available Scripts](#-available-scripts)
+* [Contributing](#-contributing)
+
+## ✨ Features
+
+* Plugs into [Iguazu](https://github.com/americanexpress/iguazu)
+* Easy dispatchable actions for create, read, update, destroy to call a REST API
+* Caching requests based on the RESTful action
+* Seamless integration in Redux
+
+## 🤹‍ Usage
+
+### Installation
+
+```bash
+npm install --save iguazu-rest
+```
 
 ### Config
 Iguazu REST uses a config object that allows you to register resources and provide default and override behavior.
 
 ```javascript
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { configureIguazuREST, resourcesReducer } from 'iguazu-rest'
+import { configureIguazuREST, resourcesReducer } from 'iguazu-rest';
 import thunk from 'redux-thunk';
 
 configureIguazuREST({
@@ -29,23 +65,25 @@ configureIguazuREST({
         },
       }),
       // optionally override the resources id key, defaults to 'id'
-      // this is only used to extract the id after a create or to get the ids of the resources in a collection
+      // this is only used to extract the id after a create
+      // or to get the ids of the resources in a collection
       idKey: 'userId',
-      // optionally massage the data to be more RESTful, collections need to be lists, resources need to be objects
-      transformData: (data, { id, actionType, state }) => massageDataToBeRESTful(data)
-    }
+      // optionally massage the data to be more RESTful,
+      // collections need to be lists, resources need to be objects
+      transformData: (data, { id, actionType, state }) => massageDataToBeRESTful(data),
+    },
   },
   // opts that will be sent along with every resource request
   defaultOpts: {
     headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-    }
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
   },
   // extend fetch with some added functionality
   baseFetch: fetchWith6sTimeout,
   // override state location, defaults to state.resources
-  getToState: (state) => state.data.resources
+  getToState: (state) => state.data.resources,
 });
 
 const store = createStore(
@@ -53,7 +91,7 @@ const store = createStore(
     resources: resourcesReducer,
   }),
   applyMiddleware(thunk)
-)
+);
 ```
 
 ### Advanced Config
@@ -80,17 +118,17 @@ configureIguazuREST({
 
   // Overriden by thunk.withExtraArgument below
   baseFetch: fetchWith6sTimeout,
-})
+});
 
 /* Contrived custom fetch client */
-const customFetchClient = (...args) => fetch(...args)
+const customFetchClient = (...args) => fetch(...args);
 
 const store = createStore(
   combineReducers({
     resources: resourcesReducer,
   }),
   applyMiddleware(thunk.withExtraArgument({
-    fetchClient: customFetchClient
+    fetchClient: customFetchClient,
   }))
 );
 ```
@@ -113,13 +151,13 @@ To use the functions that operate on collections, your API and config needs to m
 
 ### Reducer
 ```javascript
-import { resourcesReducer } from 'iguazu-rest'
-import { combineReducers, createStore } from redux;
+import { resourcesReducer } from 'iguazu-rest';
+import { combineReducers, createStore } from 'redux';
 
 const reducer = combineReducers({
   resources: resourcesReducer,
   // other reducers
-})
+});
 
 const store = createStore(reducer);
 ```
@@ -131,16 +169,17 @@ All iguazu-rest actions accept the same type of object as their single argument.
 * [`opts`] \(Object or Undefined): fetch opts to be sent along with the REST call
 * [`forceFetch`] \(Boolean or Undefined): forces the REST call to be made regardless of whether the resource or collection is loaded or not. Only applies to queryResource, queryCollection, loadCollection, and queryCollection.
 
+## 🎛️ API
 
-#### Iguazu Actions
-##### `queryResource({ resource, id, opts, forceFetch })`
-##### `queryCollection({ resource, id, opts, forceFetch })`
+### Iguazu Actions
+#### `queryResource({ resource, id, opts, forceFetch })`
+#### `queryCollection({ resource, id, opts, forceFetch })`
 
 These actions return an object following the iguazu pattern `{ data, status, promise}`.
 
 **Example:**
 
-```javascript
+```jsx
 // Author.jsx
 import { connectAsync } from 'iguazu';
 import { queryResource } from 'iguazu-rest';
@@ -156,49 +195,50 @@ const Author = ({ id, author: { name, bio } }) => (
 
 function loadDataAsProps({ store: { dispatch }, ownProps: { id } }) {
   return {
-    author: () => dispatch(queryResource({ resource: 'author', id }))
+    author: () => dispatch(queryResource({ resource: 'author', id })),
   };
 }
 
 export default connectAsync({ loadDataAsProps })(Author);
+```
 
+```jsx
 // BookList.jsx
 import { connectAsync } from 'iguazu';
 import { queryCollection } from 'iguazu-rest';
 
 const BookList = ({ books }) => (
   <div>
-    {books.map(book => <Book key={book.id} book={book} />)}
+    {books.map((book) => <Book key={book.id} book={book} />)}
   </div>
 );
 
 function loadDataAsProps({ store: { dispatch }, ownProps: { authorId } }) {
   return {
-    books: () =>
-      dispatch(queryCollection({ resource: 'book', id: { authorId } }))
-  }
+    books: () => dispatch(queryCollection({ resource: 'book', id: { authorId } })),
+  };
 }
 
 export default connectAsync({ loadDataAsProps })(BookList);
 ```
 
-#### CRUD Actions
-##### `loadResource({ resource, id, opts, forceFetch })`
-##### `loadCollection({ resource, id, opts, forceFetch })`
-##### `createResource({ resource, id, opts })`
-##### `updateResource({ resource, id, opts })`
-##### `destroyResource({ resource, id, opts })`
-##### `patchResource({ resource, id, opts })`
+### CRUD Actions
+#### `loadResource({ resource, id, opts, forceFetch })`
+#### `loadCollection({ resource, id, opts, forceFetch })`
+#### `createResource({ resource, id, opts })`
+#### `updateResource({ resource, id, opts })`
+#### `destroyResource({ resource, id, opts })`
+#### `patchResource({ resource, id, opts })`
 
 These actions return a promise that resolves with the fetched data on successful requests and reject with an error on unsuccessful requests. The error also contains the status and the body if you need to inspect those.
 
 ### Selectors
-##### `getResource({ resource, id })(state)`
-##### `getCollection({ resource, id, opts })(state)`
+#### `getResource({ resource, id })(state)`
+#### `getCollection({ resource, id, opts })(state)`
 
 ### Cleaning Actions
-##### `clearResource({ resource, id, opts })`
-##### `clearCollection({ resource, id, opts })`
+#### `clearResource({ resource, id, opts })`
+#### `clearCollection({ resource, id, opts })`
 
 These actions allow you to remove the associated data to a resource or collection from the state tree without performing any operation on the remote resource itself.
 * resources associated to a collection will only be removed if no other collection is using that same resource
@@ -207,7 +247,41 @@ These actions allow you to remove the associated data to a resource or collectio
 ### Query opts
 iguazu-rest allows you to specify your query parameters as part of the opts passed to fetch. If they are used to filter a collection, make sure they are passed in this way instead of adding them directly to the url because it is necessary for proper caching. All of the resources get normalized, so iguazu-rest needs to a way to cache which resources came back for a set of query parameters.
 
-## Contributing
+## 📜 Available Scripts
+
+**`npm run lint`**
+
+Verifies that your code matches the American Express code style defined in
+[`eslint-config-amex`](https://github.com/americanexpress/eslint-config-amex).
+
+**`npm run build`**
+
+Runs `babel` to compile `src` files to transpiled JavaScript into `lib` using
+[`babel-preset-amex`](https://github.com/americanexpress/babel-preset-amex).
+
+**`npm test`**
+
+Runs unit tests **and** verifies the format of all commit messages on the current branch.
+
+**`npm posttest`**
+
+Runs linting on the current branch.
+
+## 🎣 Git Hooks
+
+These commands will be automatically run during normal git operations like committing code.
+
+**`pre-commit`**
+
+This hook runs `npm test` before allowing a commit to be checked in.
+
+**`commit-msg`**
+
+This hook verifies that your commit message matches the One Amex conventions. See the **commit
+message** section in the [contribution guidelines](./CONTRIBUTING.md).
+
+## 🏆 Contributing
+
 We welcome Your interest in the American Express Open Source Community on Github.
 Any Contributor to any Open Source Project managed by the American Express Open
 Source Community must accept and sign an Agreement indicating agreement to the
@@ -218,10 +292,12 @@ out the Agreement](https://cla-assistant.io/americanexpress/iguazu-rest).
 
 Please feel free to open pull requests and see [CONTRIBUTING.md](./CONTRIBUTING.md) for commit formatting details.
 
-## License
+## 🗝️ License
+
 Any contributions made under this project will be governed by the [Apache License
 2.0](https://github.com/americanexpress/iguazu-rest/blob/master/LICENSE.txt).
 
-## Code of Conduct
+## 🗣️ Code of Conduct
+
 This project adheres to the [American Express Community Guidelines](./CODE_OF_CONDUCT.md).
 By participating, you are expected to honor these guidelines.

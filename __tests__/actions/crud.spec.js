@@ -57,7 +57,9 @@ describe('CRUD actions', () => {
       require('../../src/selectors').resourceIsLoading.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
-      expect(executeFetch).toHaveBeenCalledWith({ resource, id, opts, actionType: 'LOAD' });
+      expect(executeFetch).toHaveBeenCalledWith({
+        resource, id, opts, actionType: 'LOAD',
+      });
     });
 
     it('should resolve with the cached resource if it is already loaded', async () => {
@@ -93,21 +95,29 @@ describe('CRUD actions', () => {
     });
 
     it('should refetch the resource if the resource is loaded, but forceFetch is specified', async () => {
-      const thunk = loadResource({ resource, id, opts, forceFetch: true });
+      const thunk = loadResource({
+        resource, id, opts, forceFetch: true,
+      });
       require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       require('../../src/selectors').resourceIsLoading.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
-      expect(executeFetch).toHaveBeenCalledWith({ resource, id, opts, actionType: 'LOAD' });
+      expect(executeFetch).toHaveBeenCalledWith({
+        resource, id, opts, actionType: 'LOAD',
+      });
     });
 
     it('should refetch the resource if a fetch is in progess, but forceFetch is specified', async () => {
-      const thunk = loadResource({ resource, id, opts, forceFetch: true });
+      const thunk = loadResource({
+        resource, id, opts, forceFetch: true,
+      });
       require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       require('../../src/selectors').resourceIsLoading.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
-      expect(executeFetch).toHaveBeenCalledWith({ resource, id, opts, actionType: 'LOAD' });
+      expect(executeFetch).toHaveBeenCalledWith({
+        resource, id, opts, actionType: 'LOAD',
+      });
     });
   });
 
@@ -163,12 +173,16 @@ describe('CRUD actions', () => {
     });
 
     it('should refetch the collection if a fetch is in progess, but forceFetch is specified', async () => {
-      const thunk = loadCollection({ resource, id, opts, forceFetch: true });
+      const thunk = loadCollection({
+        resource, id, opts, forceFetch: true,
+      });
       require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       require('../../src/selectors').collectionIsLoading.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
-      expect(executeFetch).toHaveBeenCalledWith({ resource, id, opts, actionType: 'LOAD_COLLECTION' });
+      expect(executeFetch).toHaveBeenCalledWith({
+        resource, id, opts, actionType: 'LOAD_COLLECTION',
+      });
     });
   });
 
@@ -186,7 +200,9 @@ describe('CRUD actions', () => {
       const thunk = updateResource({ resource, id, opts });
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
-      expect(executeFetch).toHaveBeenCalledWith({ resource, id, opts, actionType: 'UPDATE' });
+      expect(executeFetch).toHaveBeenCalledWith({
+        resource, id, opts, actionType: 'UPDATE',
+      });
     });
   });
 
@@ -195,7 +211,9 @@ describe('CRUD actions', () => {
       const thunk = destroyResource({ resource, id, opts });
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
-      expect(executeFetch).toHaveBeenCalledWith({ resource, id, opts, actionType: 'DESTROY' });
+      expect(executeFetch).toHaveBeenCalledWith({
+        resource, id, opts, actionType: 'DESTROY',
+      });
     });
   });
 
@@ -204,7 +222,9 @@ describe('CRUD actions', () => {
       const thunk = patchResource({ resource, id, opts });
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
-      expect(executeFetch).toHaveBeenCalledWith({ resource, id, opts, actionType: 'PATCH' });
+      expect(executeFetch).toHaveBeenCalledWith({
+        resource, id, opts, actionType: 'PATCH',
+      });
     });
   });
 });

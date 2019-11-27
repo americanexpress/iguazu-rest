@@ -31,9 +31,9 @@ async function extractDataFromResponse(res) {
   const body = await res[isJson ? 'json' : 'text']();
   const { status } = res;
 
-  return res.ok ?
-    Promise.resolve(body) :
-    Promise.reject(Object.assign(new Error(`${res.statusText} (${res.url})`), { body, status }));
+  return res.ok
+    ? Promise.resolve(body)
+    : Promise.reject(Object.assign(new Error(`${res.statusText} (${res.url})`), { body, status }));
 }
 
 const actionTypeMethodMap = {
@@ -45,7 +45,9 @@ const actionTypeMethodMap = {
   PATCH: 'PATCH',
 };
 
-async function getAsyncData({ resource, id, opts, actionType, state, fetchClient }) {
+async function getAsyncData({
+  resource, id, opts, actionType, state, fetchClient,
+}) {
   const { resources, defaultOpts, baseFetch } = config;
   const { url, opts: resourceOpts } = resources[resource].fetch(id, actionType, state);
 
@@ -67,7 +69,9 @@ async function getAsyncData({ resource, id, opts, actionType, state, fetchClient
   return data;
 }
 
-export default function executeFetch({ resource, id, opts, actionType }) {
+export default function executeFetch({
+  resource, id, opts, actionType,
+}) {
   return (dispatch, getState, { fetchClient } = {}) => {
     const promise = getAsyncData({
       resource,
@@ -77,8 +81,12 @@ export default function executeFetch({ resource, id, opts, actionType }) {
       state: getState(),
       fetchClient,
     });
-    dispatch({ type: types[`${actionType}_STARTED`], resource, id, opts, promise });
-    dispatch(waitAndDispatchFinished(promise, { type: actionType, resource, id, opts }));
+    dispatch({
+      type: types[`${actionType}_STARTED`], resource, id, opts, promise,
+    });
+    dispatch(waitAndDispatchFinished(promise, {
+      type: actionType, resource, id, opts,
+    }));
 
     return promise;
   };

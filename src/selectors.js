@@ -43,11 +43,11 @@ export function getResource({ resource, id }) {
 }
 
 export function resourceIsLoading({ resource, id }) {
-  return state => !!config.getToState(state).getIn([resource, 'loading', getResourceIdHash(id)]);
+  return (state) => !!config.getToState(state).getIn([resource, 'loading', getResourceIdHash(id)]);
 }
 
 export function getResourceLoadPromise({ resource, id }) {
-  return state => config.getToState(state).getIn([resource, 'loading', getResourceIdHash(id)]);
+  return (state) => config.getToState(state).getIn([resource, 'loading', getResourceIdHash(id)]);
 }
 
 export function collectionIsLoaded({ resource, id, opts }) {
@@ -66,17 +66,16 @@ export function getCollection({ resource, id, opts }) {
     const error = resourceState.getIn(['collections', idHash, queryHash, 'error']);
     if (error) return error;
 
-    const { associatedIds } =
-      resourceState.getIn(['collections', idHash, queryHash], iMap({ associatedIds: [] })).toJS();
+    const { associatedIds } = resourceState.getIn(['collections', idHash, queryHash], iMap({ associatedIds: [] })).toJS();
 
-    return associatedIds.map(resourceId => resourceState.getIn(['items', resourceId]).toJS());
+    return associatedIds.map((resourceId) => resourceState.getIn(['items', resourceId]).toJS());
   };
 }
 
 export function collectionIsLoading({ resource, id, opts }) {
-  return state => !!config.getToState(state).getIn([resource, 'loading', getCollectionIdHash(id), getQueryHash(opts)]);
+  return (state) => !!config.getToState(state).getIn([resource, 'loading', getCollectionIdHash(id), getQueryHash(opts)]);
 }
 
 export function getCollectionLoadPromise({ resource, id, opts }) {
-  return state => config.getToState(state).getIn([resource, 'loading', getCollectionIdHash(id), getQueryHash(opts)]);
+  return (state) => config.getToState(state).getIn([resource, 'loading', getCollectionIdHash(id), getQueryHash(opts)]);
 }

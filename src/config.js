@@ -16,7 +16,7 @@
 
 const config = {
   baseFetch: fetch,
-  getToState: state => state.resources,
+  getToState: (state) => state.resources,
 };
 
 export function configureIguazuREST(customConfig) {

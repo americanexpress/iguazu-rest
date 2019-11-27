@@ -28,7 +28,7 @@ import {
   clearCollection,
   resourcesReducer,
   configureIguazuREST,
-} from '../src/index';
+} from '../src';
 
 describe('index', () => {
   it('should expose the expected publicAPI', () => {

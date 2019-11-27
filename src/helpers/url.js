@@ -25,38 +25,33 @@ const NUMBER_REGEX = /^\\d+$/;
  * custom method because encodeURIComponent is too aggressive and encodes stuff that doesn't
  * have to be encoded per http://tools.ietf.org/html/rfc3986
  */
-export const encodeUriQuery = val =>
-  encodeURIComponent(val)
-    .replace(/%40/gi, '@')
-    .replace(/%3A/gi, ':')
-    .replace(/%24/g, '$')
-    .replace(/%2C/gi, ',');
+export const encodeUriQuery = (val) => encodeURIComponent(val)
+  .replace(/%40/gi, '@')
+  .replace(/%3A/gi, ':')
+  .replace(/%24/g, '$')
+  .replace(/%2C/gi, ',');
 
 /**
  * We need our custom method because encodeURIComponent is too aggressive and doesn't follow
  * http://www.ietf.org/rfc/rfc3986.txt with regards to the character set
  * (pchar) allowed in path segments
  */
-export const encodeUriSegment = val =>
-  encodeUriQuery(val)
-    .replace(/%26/gi, '&')
-    .replace(/%3D/gi, '=')
-    .replace(/%2B/gi, '+');
+export const encodeUriSegment = (val) => encodeUriQuery(val)
+  .replace(/%26/gi, '&')
+  .replace(/%3D/gi, '=')
+  .replace(/%2B/gi, '+');
 
-export const parseUrlParams = url =>
-  url.split(/\W/).reduce((urlParams, param) => {
-    if (!NUMBER_REGEX.test(param) && param && (new RegExp(`(^|[^\\\\]):${param}(\\W|$)`).test(url))) {
-      urlParams[param] = { // eslint-disable-line no-param-reassign
-        isQueryParamValue: (new RegExp(`\\?.*=:${param}(?:\\W|$)`)).test(url),
-      };
-    }
-    return urlParams;
-  }, {});
+export const parseUrlParams = (url) => url.split(/\W/).reduce((urlParams, param) => {
+  if (!NUMBER_REGEX.test(param) && param && (new RegExp(`(^|[^\\\\]):${param}(\\W|$)`).test(url))) {
+    urlParams[param] = { // eslint-disable-line no-param-reassign
+      isQueryParamValue: (new RegExp(`\\?.*=:${param}(?:\\W|$)`)).test(url),
+    };
+  }
+  return urlParams;
+}, {});
 
-export const replaceUrlParamFromUrl = (url, urlParam, replace = '') =>
-  url.replace(new RegExp(`(/?):${urlParam}(\\W|$)`, 'g'), (match, leadingSlashes, tail) =>
-    (replace || tail.charAt(0) === '/' ? leadingSlashes : '') + replace + tail
-  );
+export const replaceUrlParamFromUrl = (url, urlParam, replace = '') => url.replace(new RegExp(`(/?):${urlParam}(\\W|$)`, 'g'), (match, leadingSlashes, tail) => (replace || tail.charAt(0) === '/' ? leadingSlashes : '') + replace + tail
+);
 
 export const replaceQueryStringParamFromUrl = (url, key, value) => {
   const re = new RegExp(`([?&])${key}=.*?(&|$)`, 'i');
@@ -75,8 +70,7 @@ export const splitUrlByProtocolAndDomain = (url) => {
   return [protocolAndDomain, remainderUrl];
 };
 
-const isObject = maybeObject =>
-  typeof maybeObject === 'object';
+const isObject = (maybeObject) => typeof maybeObject === 'object';
 
 
 export function addQueryParams({ url, opts = {} }) {
@@ -95,8 +89,8 @@ export function replaceUrlParams({ url, id }) {
     const idAsObject = !isObject(id) ? { id } : id;
     const value = idAsObject[urlParam] || '';
     if (value) {
-      const encodedValue = urlParamInfo.isQueryParamValue ?
-        encodeUriQuery(value) : encodeUriSegment(value);
+      const encodedValue = urlParamInfo.isQueryParamValue
+        ? encodeUriQuery(value) : encodeUriSegment(value);
       return replaceUrlParamFromUrl(wipUrl, urlParam, encodedValue);
     }
     return replaceUrlParamFromUrl(wipUrl, urlParam);

@@ -26,7 +26,9 @@ import {
 } from '../selectors';
 import executeFetch from './executeFetch';
 
-export function loadResource({ resource, id, opts, forceFetch }) {
+export function loadResource({
+  resource, id, opts, forceFetch,
+}) {
   return (dispatch, getState) => {
     const state = getState();
     let promise;
@@ -36,14 +38,18 @@ export function loadResource({ resource, id, opts, forceFetch }) {
     } else if (resourceIsLoading({ resource, id })(state) && !forceFetch) {
       promise = getResourceLoadPromise({ resource, id })(state);
     } else {
-      promise = dispatch(executeFetch({ resource, id, opts, actionType: 'LOAD' }));
+      promise = dispatch(executeFetch({
+        resource, id, opts, actionType: 'LOAD',
+      }));
     }
 
     return promise;
   };
 }
 
-export function loadCollection({ resource, id, opts, forceFetch }) {
+export function loadCollection({
+  resource, id, opts, forceFetch,
+}) {
   return (dispatch, getState) => {
     const state = getState();
     let promise;
@@ -53,7 +59,9 @@ export function loadCollection({ resource, id, opts, forceFetch }) {
     } else if (collectionIsLoading({ resource, id, opts })(state) && !forceFetch) {
       promise = getCollectionLoadPromise({ resource, id, opts })(state);
     } else {
-      promise = dispatch(executeFetch({ resource, id, opts, actionType: 'LOAD_COLLECTION' }));
+      promise = dispatch(executeFetch({
+        resource, id, opts, actionType: 'LOAD_COLLECTION',
+      }));
     }
 
     return promise;
@@ -61,17 +69,25 @@ export function loadCollection({ resource, id, opts, forceFetch }) {
 }
 
 export function createResource({ resource, id, opts }) {
-  return dispatch => dispatch(executeFetch({ resource, id, opts, actionType: 'CREATE' }));
+  return (dispatch) => dispatch(executeFetch({
+    resource, id, opts, actionType: 'CREATE',
+  }));
 }
 
 export function updateResource({ resource, id, opts }) {
-  return dispatch => dispatch(executeFetch({ resource, id, opts, actionType: 'UPDATE' }));
+  return (dispatch) => dispatch(executeFetch({
+    resource, id, opts, actionType: 'UPDATE',
+  }));
 }
 
 export function destroyResource({ resource, id, opts }) {
-  return dispatch => dispatch(executeFetch({ resource, id, opts, actionType: 'DESTROY' }));
+  return (dispatch) => dispatch(executeFetch({
+    resource, id, opts, actionType: 'DESTROY',
+  }));
 }
 
 export function patchResource({ resource, id, opts }) {
-  return dispatch => dispatch(executeFetch({ resource, id, opts, actionType: 'PATCH' }));
+  return (dispatch) => dispatch(executeFetch({
+    resource, id, opts, actionType: 'PATCH',
+  }));
 }

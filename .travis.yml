@@ -2,12 +2,21 @@ language: node_js
 node_js:
   - "12"
   - "10"
-deploy:
-  skip_cleanup: true
-  on:
-    tags: true
-    branch: master
-  provider: npm
-  email: open-source-ops@aexp.com
-  api_key:
-    secure: odWEooN0hO4I+Zh24inHvVKJ8HoBoyBE8CoyTWiKxhDQvfgHfMc/ytSuEUnVvR3NnP0/x1k/bSE0eqTqyu9ILir2h0O6Kv2T8fkbcomOMOILeAUsdlVJMeZUOGgp+qjkWTOuqdfgafcFv6tXJAnXAvPa8arNriF9eccQ/Dv81sB2Ku2cJ3lZuHKzkSVABD+lKxC4JDZLs5hMvWak42kK78PDpgSaSzshVfJ3wgvpw/5SfRpF5pum+eFIIVkusTsoV7reOFF0eQIsHuI6NYJTVTZjec9VRXu9f7SMermRIPSyXiebnW4PlENqZKaXfHnlHQOQGjFI7Vl6bs2qdidR+zWeFj6mwdUfv3oYRz21EgZSYRioI+OQPru2ai04lM60Bfu7NNiMBL5/7hjbkG+xR4MEeYpHy49gBJun21EDum75+YZHuCtTILRVNCEBIQ5Yw40tKd6GnwDNkDZxh/Z51BYHi3dXvj1BIBxl1y1jObjX+xqpVsUm3qJ3MsYYdjO6LgBa5RXXyd1DMNBGHb/+wpl4XHAvEWzSOu4WY+rrWd3+kD12Qcb9RfEECJZHrckh6XLSX/bCq/yNUWxZu2X+PEmFzVppxwCyk5gsRbCd1iAGBi0VdeYoKhg4tzbxOITxWP4YKvtHkO8ckZvZoxNK7HXki/P5tGOWnWfQZQ2AKXM=
+before_install:
+  # Create a master branch for commitlint
+  # https://github.com/conventional-changelog/commitlint/issues/6
+  - git remote set-branches origin master && git fetch
+jobs:
+  include:
+    # Define the release stage that runs semantic-release
+    - stage: release
+      node_js:
+        - 10
+        - 12
+      deploy:
+        on:
+          branch: master
+        provider: script
+        skip_cleanup: true
+        script:
+          - npx semantic-release

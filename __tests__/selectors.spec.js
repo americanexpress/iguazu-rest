@@ -40,7 +40,7 @@ const idHash = getResourceIdHash(id);
 
 describe('selectors', () => {
   beforeAll(() => {
-    configureIguazuREST({ getToState: state => state.deep.resources });
+    configureIguazuREST({ getToState: (state) => state.deep.resources });
   });
 
   describe('resourceIsLoaded', () => {

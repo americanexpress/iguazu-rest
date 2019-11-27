@@ -51,10 +51,10 @@ export function waitAndDispatchFinished(promise, action) {
     let data;
     try {
       data = await promise;
-      dispatch(Object.assign({}, action, { type: types[`${action.type}_FINISHED`], data }));
+      dispatch({ ...action, type: types[`${action.type}_FINISHED`], data });
     } catch (e) {
       data = e;
-      dispatch(Object.assign({}, action, { type: types[`${action.type}_ERROR`], data }));
+      dispatch({ ...action, type: types[`${action.type}_ERROR`], data });
     }
   };
 }

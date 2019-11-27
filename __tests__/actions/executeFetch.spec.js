@@ -55,12 +55,16 @@ describe('executeFetch', () => {
         JSON.stringify({ id: '123', name: 'joe' }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
-      const thunk = executeFetch({ resource, id, opts, actionType: 'LOAD' });
+      const thunk = executeFetch({
+        resource, id, opts, actionType: 'LOAD',
+      });
       const data = await thunk(dispatch, getState);
       expect(data).toEqual({ id: '123', name: 'joe' });
       expect(fetch).toHaveBeenCalledWith(
         'http://api.domain.com/users/123',
-        { default: 'opt', method: 'GET', resource: 'opt', some: 'opt' }
+        {
+          default: 'opt', method: 'GET', resource: 'opt', some: 'opt',
+        }
       );
       const promise = Promise.resolve(data);
       expect(dispatch).toHaveBeenCalledWith({
@@ -109,8 +113,7 @@ describe('executeFetch', () => {
         resources: {
           users: {
             fetch: () => ({ url: 'http://api.domain.com/users/:id' }),
-            transformData: (data, { actionType }) =>
-              (actionType === 'LOAD_COLLECTION' ? data.actualCollection : data),
+            transformData: (data, { actionType }) => (actionType === 'LOAD_COLLECTION' ? data.actualCollection : data),
           },
         },
       });
@@ -121,7 +124,9 @@ describe('executeFetch', () => {
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
-      const thunk = executeFetch({ resource, id, opts, actionType: 'LOAD_COLLECTION' });
+      const thunk = executeFetch({
+        resource, id, opts, actionType: 'LOAD_COLLECTION',
+      });
       const data = await thunk(dispatch, getState);
       expect(data).toEqual([{ id: '123', name: 'joe' }]);
     });
@@ -131,13 +136,11 @@ describe('executeFetch', () => {
     let fetchClient;
     const setupFetchMock = () => {
       Object.assign(config, {
-        baseFetch: jest.fn((...args) =>
-          // Create the mock once called
-          fetch.mockResponseOnce(
-            JSON.stringify({ id: '1234', name: 'bill' }),
-            { status: 200, headers: { 'Content-Type': 'application/json' } }
-          )(...args)
-        ),
+        // Create the mock once called
+        baseFetch: jest.fn((...args) => fetch.mockResponseOnce(
+          JSON.stringify({ id: '1234', name: 'bill' }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )(...args)),
         defaultOpts: { default: 'opt' },
         resources: {
           users: {
@@ -150,36 +153,42 @@ describe('executeFetch', () => {
           },
         },
       });
-      fetchClient = jest.fn((...args) =>
-        // Create the mock once called
-        fetch.mockResponseOnce(
-          JSON.stringify({ id: '123', name: 'joe' }),
-          { status: 200, headers: { 'Content-Type': 'application/json' } }
-        )(...args)
-      );
+      // Create the mock once called
+      fetchClient = jest.fn((...args) => fetch.mockResponseOnce(
+        JSON.stringify({ id: '123', name: 'joe' }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      )(...args));
     };
     beforeEach(() => {
       setupFetchMock();
     });
     it('should be called when supplied by redux thunks', async () => {
-      const thunk = executeFetch({ resource, id, opts, actionType: 'LOAD' });
+      const thunk = executeFetch({
+        resource, id, opts, actionType: 'LOAD',
+      });
       const data = await thunk(dispatch, getState, { fetchClient });
       expect(data).toEqual({ id: '123', name: 'joe' });
       expect(fetch).toHaveBeenCalledWith(
         'http://api.domain.com/users/123',
-        { default: 'opt', method: 'GET', resource: 'opt', some: 'opt' }
+        {
+          default: 'opt', method: 'GET', resource: 'opt', some: 'opt',
+        }
       );
       expect(dispatch).toHaveBeenCalledWith('waitAndDispatchFinishedThunk');
       expect(fetchClient).toHaveBeenCalledTimes(1);
       expect(config.baseFetch).not.toHaveBeenCalled();
     });
     it('should not be called if not supplied and use baseFetch instead', async () => {
-      const thunk = executeFetch({ resource, id, opts, actionType: 'LOAD' });
+      const thunk = executeFetch({
+        resource, id, opts, actionType: 'LOAD',
+      });
       const data = await thunk(dispatch, getState);
       expect(data).toEqual({ id: '1234', name: 'bill' });
       expect(fetch).toHaveBeenCalledWith(
         'http://api.domain.com/users/123',
-        { default: 'opt', method: 'GET', resource: 'opt', some: 'opt' }
+        {
+          default: 'opt', method: 'GET', resource: 'opt', some: 'opt',
+        }
       );
       expect(fetchClient).not.toHaveBeenCalled();
       expect(config.baseFetch).toHaveBeenCalledTimes(1);

@@ -5,5 +5,7 @@ export function clearResource({ resource, id }) {
 }
 
 export function clearCollection({ resource, id, opts }) {
-  return { resource, id, opts, type: CLEAR_COLLECTION };
+  return {
+    resource, id, opts, type: CLEAR_COLLECTION,
+  };
 }

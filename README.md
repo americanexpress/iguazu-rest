@@ -1,13 +1,9 @@
-<h1>
-  <center>
-    <br />
-    <img src="./iguazu-rest.png" alt="iguazu-rest - Iguazu" width="50%" />
-    <br /><br />
-  </center>
+<h1 align="center">
+  <img src='https://github.com/americanexpress/iguazu-rest/raw/master/iguazu-rest.png' alt="Iguazu Rest - One Amex" width='50%'/>
 </h1>
 
-[![npm version](https://badge.fury.io/js/iguazu-rest.svg)](https://badge.fury.io/js/iguazu-rest)
-[![Build Status](https://travis-ci.org/americanexpress/iguazu-rest.svg?branch=master)](https://travis-ci.org/americanexpress/iguazu-rest)
+[![npm](https://img.shields.io/npm/v/iguazu-rest)](https://www.npmjs.com/package/iguazu-rest)
+[![Travis (.org) branch](https://img.shields.io/travis/americanexpress/iguazu-rest/master)](https://travis-ci.org/americanexpress/iguazu-rest)
 
 > Iguazu REST is a plugin for the [Iguazu](https://github.com/americanexpress/iguazu)
 > ecosystem that allows for pre-built async calls for REST with smart caching in Redux.

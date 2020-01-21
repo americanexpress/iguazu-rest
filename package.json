@@ -11,7 +11,8 @@
     "lint": "eslint --ignore-path .gitignore --ext js,jsx,md .",
     "prepublish": "npm run build",
     "test": "jest && commitlint --from origin/master --to HEAD",
-    "posttest": "npm run lint"
+    "test:lockfile": "lockfile-lint -p package-lock.json -t npm -a npm -o https: -c -i",
+    "posttest": "npm run lint && npm run test:lockfile"
   },
   "author": "Maia Teegarden",
   "contributors": [
@@ -66,28 +67,29 @@
     "object-hash": "^1.3.1"
   },
   "devDependencies": {
-    "semantic-release": "^15.13.31",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "@babel/polyfill": "^7.2.5",
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
     "@semantic-release/changelog": "^3.0.5",
     "@semantic-release/commit-analyzer": "^6.3.2",
     "@semantic-release/git": "^7.0.18",
     "@semantic-release/npm": "^5.3.4",
     "@semantic-release/release-notes-generator": "^7.3.2",
-    "@commitlint/cli": "^8.2.0",
-    "@commitlint/config-conventional": "^8.2.0",
-    "husky": "^3.0.9",
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.3.3",
-    "@babel/polyfill": "^7.2.5",
     "amex-jest-preset": "^5.0.0",
-    "core-js-compat": "3.4.5",
     "babel-jest": "^24.1.0",
     "babel-preset-amex": "^3.2.0",
+    "core-js-compat": "3.4.5",
     "eslint": "^6.5.0",
     "eslint-config-amex": "^11.1.0",
+    "husky": "^3.0.9",
     "jest": "^24.1.0",
     "jest-fetch-mock": "^1.2.0",
+    "lockfile-lint": "^3.0.8",
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "semantic-release": "^15.13.31"
   },
   "release": {
     "plugins": [

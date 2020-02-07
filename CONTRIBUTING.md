@@ -19,6 +19,7 @@ This project adheres to the American Express [Code of Conduct](./CODE_OF_CONDUCT
 
 ### Installation
 
+
 1. Fork the repository `iguazu-rest` to your GitHub account.
 2. Afterwards run the following commands in your terminal
 
@@ -32,7 +33,7 @@ This project adheres to the American Express [Code of Conduct](./CODE_OF_CONDUCT
 3. Install the dependencies by running
 
     ```bash
-    $ cd npm install
+    $ pm install
     ```
 
 4. You can now run any of these scripts from the root folder.
@@ -57,12 +58,11 @@ Runs unit tests **and** verifies the format of all commit messages on the curren
 
 - `npm posttest`
 
-Runs linting on the current branch and checks that the commits follow [conventional commits](https://www.conventionalcommits.org/)
-
+Runs linting on the current branch, checks that the commits follow [conventional commits](https://www.conventionalcommits.org/) and verifies that the `package-lock.json` file includes public NPM registry URLs.
 
 ## Submitting a new feature
 
-When submitting a new feature request or enhancement of an existing feature please review the following:-
+When submitting a new feature request or enhancement of an existing feature please review the following:
 
 ### Is your feature request related to a problem
 

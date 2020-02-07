@@ -33,7 +33,7 @@ This project adheres to the American Express [Code of Conduct](./CODE_OF_CONDUCT
 3. Install the dependencies by running
 
     ```bash
-    $ pm install
+    $ npm install
     ```
 
 4. You can now run any of these scripts from the root folder.

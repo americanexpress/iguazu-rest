@@ -48,7 +48,12 @@ const actionTypeMethodMap = {
 async function getAsyncData({
   resource, id, opts, actionType, state, fetchClient,
 }) {
-  const { resources, defaultOpts, baseFetch } = config;
+  const {
+    resources,
+    defaultOpts,
+    baseFetch,
+    composeFetch,
+  } = config;
   const { url, opts: resourceOpts } = resources[resource].fetch(id, actionType, state);
 
   const fetchOpts = merge.all([
@@ -60,8 +65,9 @@ async function getAsyncData({
   const fetchUrl = buildFetchUrl({ url, id, opts: fetchOpts });
 
   const selectedFetchClient = fetchClient || baseFetch;
+  const composedFetchClient = composeFetch(selectedFetchClient);
 
-  const res = await selectedFetchClient(fetchUrl, fetchOpts);
+  const res = await composedFetchClient(fetchUrl, fetchOpts);
   const rawData = await extractDataFromResponse(res);
   const { transformData } = config.resources[resource];
   const data = transformData ? transformData(rawData, { id, opts, actionType }) : rawData;

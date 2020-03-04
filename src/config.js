@@ -16,6 +16,7 @@
 
 const config = {
   baseFetch: fetch,
+  composeFetch: (fetch) => fetch,
   getToState: (state) => state.resources,
 };
 

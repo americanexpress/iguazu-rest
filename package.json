@@ -17,7 +17,7 @@
   "author": "Maia Teegarden",
   "contributors": [
     "Andres Escobar <Andres.Escobar@aexp.com> (https://github.com/anescobar1991)",
-    "James Singleton <James.Singleton1@aexp.com> https://github.com/JamesSingleton)",
+    "James Singleton <James.Singleton1@aexp.com> (https://github.com/JamesSingleton)",
     "Jimmy King  <Jimmy.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
     "Jonathan Adshead <Jonathan.Adshead@aexp.com> (https://github.com/JAdshead)",
     "Michael Tobia <Michael.M.Tobia@aexp.com> (https://github.com/Francois-Esquire)",
@@ -96,8 +96,9 @@
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
       "@semantic-release/changelog",
+      "@semantic-release/npm",
       "@semantic-release/git",
-      "@semantic-release/npm"
+      "@semantic-release/github"
     ],
     "branch": "master"
   },

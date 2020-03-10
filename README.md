@@ -103,6 +103,10 @@ Thunk-provided `fetchClient` overrides `baseFetch` as the concerns of the
 environment are more important such as providing cookie support on the server or
 enforcing request timeouts.
 
+To retain the ability to apply additional fetch functionality with a thunk-provided
+`fetchClient` you may also extend the behavior by providing a `composeFetch`
+function in the configuration that returns a composed fetch function.
+
 ```javascript
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { configureIguazuREST, resourcesReducer } from 'iguazu-rest';
@@ -113,6 +117,9 @@ configureIguazuREST({
 
   // Overriden by thunk.withExtraArgument below
   baseFetch: fetchWith6sTimeout,
+
+  // Restored functionality with composition
+  composeFetch: (customFetch) => composeFetchWith6sTimeout(customFetch),
 });
 
 /* Contrived custom fetch client */

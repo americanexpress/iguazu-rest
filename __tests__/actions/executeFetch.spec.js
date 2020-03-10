@@ -194,4 +194,118 @@ describe('executeFetch', () => {
       expect(config.baseFetch).toHaveBeenCalledTimes(1);
     });
   });
+  describe('composeFetch', () => {
+  // Helpers and Mocks
+    let fetchClient;
+    const mockFetch = jest.fn((fetch) => fetch);
+    const composeFetch = jest.fn((fetch) => mockFetch(fetch));
+
+    const setupFetchMock = () => {
+      Object.assign(config, {
+        // Create the mock once called
+        baseFetch: jest.fn((...args) => fetch.mockResponseOnce(
+          JSON.stringify({ id: '1234', name: 'bill' }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )(...args)),
+        composeFetch,
+        defaultOpts: { default: 'opt' },
+        resources: {
+          users: {
+            fetch: () => ({
+              url: 'http://api.domain.com/users/:id',
+              opts: {
+                resource: 'opt',
+              },
+            }),
+          },
+        },
+      });
+      // Create the mock once called
+      fetchClient = jest.fn((...args) => fetch.mockResponseOnce(
+        JSON.stringify({ id: '123', name: 'joe' }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      )(...args));
+    };
+
+    beforeEach(() => {
+      mockFetch.mockClear();
+      composeFetch.mockClear();
+    });
+
+    it('should compose with baseFetch config and call resulting fetch func', async () => {
+      setupFetchMock();
+      const thunk = executeFetch({
+        resource, id, opts, actionType: 'LOAD',
+      });
+      const data = await thunk(dispatch, getState);
+      expect(data).toEqual({ id: '1234', name: 'bill' });
+      expect(fetch).toHaveBeenCalledWith(
+        'http://api.domain.com/users/123',
+        {
+          default: 'opt', method: 'GET', resource: 'opt', some: 'opt',
+        }
+      );
+      expect(dispatch).toHaveBeenCalledWith('waitAndDispatchFinishedThunk');
+      expect(config.baseFetch).toHaveBeenCalledTimes(1);
+      expect(fetchClient).not.toHaveBeenCalled();
+      expect(composeFetch).toHaveBeenCalledWith(config.baseFetch);
+      expect(mockFetch).toHaveBeenCalled();
+    });
+    it('should compose with fetchClient and call resulting fetch func', async () => {
+      setupFetchMock();
+
+      const thunk = executeFetch({
+        resource, id, opts, actionType: 'LOAD',
+      });
+      const data = await thunk(dispatch, getState, { fetchClient });
+      expect(data).toEqual({ id: '123', name: 'joe' });
+      expect(fetch).toHaveBeenCalledWith(
+        'http://api.domain.com/users/123',
+        {
+          default: 'opt', method: 'GET', resource: 'opt', some: 'opt',
+        }
+      );
+      expect(dispatch).toHaveBeenCalledWith('waitAndDispatchFinishedThunk');
+      expect(fetchClient).toHaveBeenCalledTimes(1);
+      expect(config.baseFetch).not.toHaveBeenCalled();
+      expect(composeFetch).toHaveBeenCalledWith(fetchClient);
+      expect(mockFetch).toHaveBeenCalled();
+    });
+    it('should not be called if not supplied and use baseFetch instead', async () => {
+      Object.assign(config, {
+        // Create the mock once called
+        baseFetch: jest.fn((...args) => fetch.mockResponseOnce(
+          JSON.stringify({ id: '1234', name: 'bill' }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )(...args)),
+        composeFetch: (fetch) => fetch,
+        defaultOpts: { default: 'opt' },
+        resources: {
+          users: {
+            fetch: () => ({
+              url: 'http://api.domain.com/users/:id',
+              opts: {
+                resource: 'opt',
+              },
+            }),
+          },
+        },
+      });
+      const thunk = executeFetch({
+        resource, id, opts, actionType: 'LOAD',
+      });
+      const data = await thunk(dispatch, getState);
+      expect(data).toEqual({ id: '1234', name: 'bill' });
+      expect(fetch).toHaveBeenCalledWith(
+        'http://api.domain.com/users/123',
+        {
+          default: 'opt', method: 'GET', resource: 'opt', some: 'opt',
+        }
+      );
+      expect(fetchClient).not.toHaveBeenCalled();
+      expect(config.baseFetch).toHaveBeenCalledTimes(1);
+      expect(composeFetch).not.toHaveBeenCalled();
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+  });
 });

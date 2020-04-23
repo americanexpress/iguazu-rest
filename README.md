@@ -249,6 +249,31 @@ These actions allow you to remove the associated data to a resource or collectio
 ### Query opts
 iguazu-rest allows you to specify your query parameters as part of the opts passed to fetch. If they are used to filter a collection, make sure they are passed in this way instead of adding them directly to the url because it is necessary for proper caching. All of the resources get normalized, so iguazu-rest needs to a way to cache which resources came back for a set of query parameters.
 
+```jsx
+// Articles.jsx
+import { connectAsync } from 'iguazu';
+import { queryCollection } from 'iguazu-rest';
+
+const Articles = ({ articles }) => (
+  <div>
+    {articles.map((article) => <Article key={article.id} article={article} />)}
+  </div>
+);
+
+function loadDataAsProps({ store: { dispatch } }) {
+  return {
+    articles: () => dispatch(queryCollection({
+      resource: 'articles',
+      opts: {
+        query: { limit: 10, sortBy: 'title' },
+      },
+    })),
+  };
+}
+
+export default connectAsync({ loadDataAsProps })(Articles);
+```
+
 ## 🏆 Contributing
 
 We welcome Your interest in the American Express Open Source Community on Github.

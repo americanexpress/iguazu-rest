@@ -14,5 +14,5 @@
  * permissions and limitations under the License.
  */
 
-export const ID_TYPE_ERROR = 'ID must be an object, number, or string';
+export const ID_TYPE_ERROR = 'Collection response must be an array of objects containing a unique id key (either "id" by default, or a custom "idKey" of your choice). The ID must be an object, number, or string. For non-compliant API responses, you can transform the data using a custom "transformData" function.';
 export const ARRAY_RESPONSE_ERROR = 'Resource call must return an object, not an array';

@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/americanexpress/iguazu-rest/compare/v1.9.0...v1.9.1) (2020-04-28)
+
+
+### Bug Fixes
+
+* **errors:** clarify messaging for collection fetch errors ([e8627cf](https://github.com/americanexpress/iguazu-rest/commit/e8627cf60eeaea6fdaab1217dab20f29dd012fbb))
+
 # [1.9.0](https://github.com/americanexpress/iguazu-rest/compare/v1.8.0...v1.9.0) (2020-04-28)
 
 

@@ -150,7 +150,7 @@ To use the functions that operate on collections, your API and config needs to m
 * The URL specified on the `fetch` config should return the full collection when the `/:id` is omitted. 
 * URLs can have optional path parameters by including `?`, such as `${process.env.HOST_URL}/users/:userId?/books`.
 * The API must return an array of resource objects. If it returns an object (common in paged APIs), you can use the `transformData` config function to return the array field of the object instead.
-* Each object in the array must have a unique ID field, normally named `id`.  If it is not named `id`, then the field name must be set in the `idKey` prop on the resource config. 
+* Each object in the array must have a unique ID field, normally named `id`.  If it is not named `id`, then the field name must be set in the `idKey` prop on the resource config. Iguazu will throw an error on successful network responses if it cannot find a unique ID for each item in the array.
 
 ### Reducer
 ```javascript

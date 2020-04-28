@@ -101,7 +101,7 @@ export function replaceUrlParams({ url, id }) {
 export function buildFetchUrl({ url, id, opts }) {
   const [protocolAndDomain, remainderUrl] = splitUrlByProtocolAndDomain(url);
 
-  let builtUrl = replaceUrlParams({ url: remainderUrl, id });
+  let builtUrl = replaceUrlParams({ url: remainderUrl, id }).replace(/\?\//g, '/');
   builtUrl = addQueryParams({ url: builtUrl, opts });
 
   return protocolAndDomain + builtUrl;

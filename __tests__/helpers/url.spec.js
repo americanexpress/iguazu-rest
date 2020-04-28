@@ -47,6 +47,29 @@ describe('buildFetchUrl', () => {
     expect(url).toBe('http://api.domain.com/users/123/posts');
   });
 
+  it('should handle empty optional ids by removing extra forward slashes or question marks', () => {
+    const baseUrl = 'http://api.domain.com/users/:userId?/posts/:postId';
+    const url = buildFetchUrl({ url: baseUrl, id: { someId: 'huh' } });
+    expect(url).toBe('http://api.domain.com/users/posts');
+  });
+
+  it('should handle non-empty optional ids', () => {
+    const baseUrl = 'http://api.domain.com/users/:userId?/posts/:postId';
+    const url = buildFetchUrl({ url: baseUrl, id: { userId: '123', someId: 'huh' } });
+    expect(url).toBe('http://api.domain.com/users/123/posts');
+  });
+
+  it('omits `:user?` when id field is not passed', () => {
+    const baseUrl = 'http://api.domain.com/users/:user?/comments';
+    const url = buildFetchUrl({
+      url: baseUrl,
+      opts: {
+        query: { someModifier: 'questionable?' },
+      },
+    });
+    expect(url).toBe('http://api.domain.com/users/comments?someModifier=questionable?');
+  });
+
   it('should add query params', () => {
     const baseUrl = 'http://api.domain.com/users/:userId';
     const url = buildFetchUrl({

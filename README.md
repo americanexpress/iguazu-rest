@@ -230,6 +230,7 @@ export default connectAsync({ loadDataAsProps })(BookList);
 #### `loadCollection({ resource, id, opts, forceFetch })`
 #### `createResource({ resource, id, opts })`
 #### `updateResource({ resource, id, opts })`
+#### `updateCollection({ resource, id, opts })`
 #### `destroyResource({ resource, id, opts })`
 #### `patchResource({ resource, id, opts })`
 

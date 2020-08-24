@@ -30,6 +30,7 @@ const {
   LOAD_COLLECTION_STARTED,
   CREATE_STARTED,
   UPDATE_STARTED,
+  UPDATE_COLLECTION_STARTED,
   DESTROY_STARTED,
   PATCH_STARTED,
   LOAD_FINISHED,
@@ -39,6 +40,8 @@ const {
   CREATE_FINISHED,
   CREATE_ERROR,
   UPDATE_FINISHED,
+  UPDATE_COLLECTION_FINISHED,
+  UPDATE_COLLECTION_ERROR,
   UPDATE_ERROR,
   DESTROY_FINISHED,
   DESTROY_ERROR,
@@ -88,6 +91,13 @@ export function resourceReducer(state, action) {
       const { id, promise } = action;
       const idHash = getResourceIdHash(id);
       return state.update('updating', (map) => map.set(idHash, promise));
+    }
+
+    case UPDATE_COLLECTION_STARTED: {
+      const { id, opts, promise } = action;
+      const collectionIdHash = getCollectionIdHash(id);
+      const queryHash = getQueryHash(opts);
+      return state.update('updating', (map) => map.setIn([collectionIdHash, queryHash], promise));
     }
 
     case DESTROY_STARTED: {
@@ -173,6 +183,30 @@ export function resourceReducer(state, action) {
       );
     }
 
+    case UPDATE_COLLECTION_FINISHED: {
+      const {
+        id, resource: resourceType, data, opts,
+      } = action;
+      const collectionIdHash = getCollectionIdHash(id);
+      const queryHash = getQueryHash(opts);
+      const idKey = getIdKey(resourceType);
+      const resourceMap = Array.isArray(data)
+        ? data.reduce((map, resource) => {
+          const resourceIdHash = getResourceIdHash(resource[idKey]);
+          return Object.assign(map, { [resourceIdHash]: resource });
+        }, {}) : {};
+      const associatedIds = Object.keys(resourceMap);
+      return state.withMutations((resourceState) => resourceState
+        .deleteIn(['updating', collectionIdHash, queryHash])
+        .update('updating', (updating) => (updating.get(collectionIdHash, iMap()).isEmpty() ? updating.delete(collectionIdHash) : updating))
+        .mergeIn(['items'], fromJS(resourceMap))
+        .setIn(
+          ['collections', collectionIdHash, queryHash],
+          iMap({ associatedIds: iList(associatedIds) })
+        )
+      );
+    }
+
     case CLEAR_COLLECTION: {
       const { id, opts } = action;
       const collectionIdHash = getCollectionIdHash(id);
@@ -206,6 +240,17 @@ export function resourceReducer(state, action) {
       return state.withMutations((resourceState) => resourceState
         .deleteIn(['loading', collectionIdHash, queryHash])
         .update('loading', (map) => (map.get(collectionIdHash, iMap()).isEmpty() ? map.delete(collectionIdHash) : map))
+        .setIn(['collections', collectionIdHash, queryHash, 'error'], data)
+      );
+    }
+
+    case UPDATE_COLLECTION_ERROR: {
+      const { id, data, opts } = action;
+      const collectionIdHash = getCollectionIdHash(id);
+      const queryHash = getQueryHash(opts);
+      return state.withMutations((resourceState) => resourceState
+        .deleteIn(['updating', collectionIdHash, queryHash])
+        .update('updating', (map) => (map.get(collectionIdHash, iMap()).isEmpty() ? map.delete(collectionIdHash) : map))
         .setIn(['collections', collectionIdHash, queryHash, 'error'], data)
       );
     }

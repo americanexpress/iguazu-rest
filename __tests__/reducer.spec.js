@@ -26,6 +26,7 @@ import {
   LOAD_COLLECTION_STARTED,
   CREATE_STARTED,
   UPDATE_STARTED,
+  UPDATE_COLLECTION_STARTED,
   DESTROY_STARTED,
   PATCH_STARTED,
   LOAD_FINISHED,
@@ -36,6 +37,8 @@ import {
   CREATE_ERROR,
   UPDATE_FINISHED,
   UPDATE_ERROR,
+  UPDATE_COLLECTION_FINISHED,
+  UPDATE_COLLECTION_ERROR,
   DESTROY_FINISHED,
   DESTROY_ERROR,
   RESET,
@@ -100,6 +103,18 @@ describe('reducer', () => {
       };
       const newState = resourceReducer(initialResourceState, action);
       expect(newState.getIn(['updating', getResourceIdHash(id)])).toEqual(promise);
+    });
+
+    it('should handle UPDATE_COLLECTION_STARTED action', () => {
+      const promise = Promise.resolve();
+      const collectionIdHash = getCollectionIdHash();
+      const queryHash = getQueryHash();
+      const action = {
+        type: UPDATE_COLLECTION_STARTED,
+        promise,
+      };
+      const newState = resourceReducer(initialResourceState, action);
+      expect(newState.getIn(['updating', collectionIdHash, queryHash])).toEqual(promise);
     });
 
     it('should handle DESTROY_STARTED action', () => {
@@ -460,6 +475,94 @@ describe('reducer', () => {
       const newState = resourceReducer(initialState, action);
       expect(newState.getIn(['updating', idHash])).toBeUndefined();
       expect(newState.getIn(['items', idHash])).toBeUndefined();
+    });
+
+    it('should handle UPDATE_COLLECTION_FINISHED action with a successful response', () => {
+      const promise = Promise.resolve();
+      const collectionIdHash = getCollectionIdHash({});
+      const queryHash = getQueryHash();
+      const resourceIdHash = getResourceIdHash(id);
+      const action = {
+        type: UPDATE_COLLECTION_FINISHED,
+        resource: 'users',
+        idHash: collectionIdHash,
+        data: [{ id: '123' }],
+      };
+      const opts = { query: 'value' };
+      const differentQueryHash = getQueryHash(opts);
+      const initialState = initialResourceState.setIn(
+        ['updating', collectionIdHash],
+        iMap({ [queryHash]: promise, [differentQueryHash]: promise })
+      );
+      const newState = resourceReducer(initialState, action);
+      expect(newState.getIn(['updating', collectionIdHash, queryHash])).toBeUndefined();
+      expect(newState.getIn(['updating', collectionIdHash, differentQueryHash])).toBeDefined();
+      expect(newState.getIn(['items', resourceIdHash]).toJS()).toEqual({ id: '123' });
+      expect(newState.getIn(['collections', collectionIdHash, queryHash]).toJS())
+        .toEqual({ associatedIds: [resourceIdHash] });
+
+      const updatedState = resourceReducer(newState, {
+        type: UPDATE_COLLECTION_FINISHED,
+        resource: 'users',
+        idHash: collectionIdHash,
+        opts,
+        data: '',
+      });
+      expect(updatedState.getIn(['updating', collectionIdHash, differentQueryHash])).toBeUndefined();
+    });
+
+    it('should reset error on subsequent UPDATE_COLLECTION_FINISHED success', () => {
+      const promise = Promise.resolve();
+      const error = new Error('load error');
+      const collectionIdHash = getCollectionIdHash({});
+      const queryHash = getQueryHash();
+      const action = {
+        type: UPDATE_COLLECTION_FINISHED,
+        resource: 'users',
+        idHash: collectionIdHash,
+        data: [{ id: '123' }],
+      };
+      const initialState = initialResourceState
+        .setIn(['collections', collectionIdHash, queryHash, 'error'], error)
+        .setIn(['updating', collectionIdHash], iMap({ [queryHash]: promise }));
+
+      const newState = resourceReducer(initialState, action);
+      expect(newState.getIn(['updating', collectionIdHash, queryHash])).toBeUndefined();
+      expect(newState.getIn(['collections', collectionIdHash, queryHash, 'error'])).toBeUndefined();
+    });
+
+    it('should handle UPDATE_COLLECTION_ERROR action', () => {
+      const promise = Promise.resolve();
+      const error = new Error('update error');
+      const collectionIdHash = getCollectionIdHash({});
+      const queryHash = getQueryHash();
+      const action = {
+        type: UPDATE_COLLECTION_ERROR,
+        resource: 'users',
+        idHash: collectionIdHash,
+        data: error,
+      };
+      const opts = { query: 'value' };
+      const differentQueryHash = getQueryHash(opts);
+      const initialState = initialResourceState.setIn(
+        ['updating', collectionIdHash],
+        iMap({ [queryHash]: promise, [differentQueryHash]: promise })
+      );
+      const newState = resourceReducer(initialState, action);
+      expect(newState.getIn(['updating', collectionIdHash, queryHash])).toBeUndefined();
+      expect(newState.getIn(['updating', collectionIdHash, differentQueryHash])).toBeDefined();
+      expect(newState.getIn(['collections', collectionIdHash, queryHash, 'error'])).toEqual(error);
+
+      const updatedState = resourceReducer(newState, {
+        type: UPDATE_COLLECTION_ERROR,
+        resource: 'users',
+        idHash: collectionIdHash,
+        opts,
+        data: error,
+      });
+      expect(updatedState.getIn(['updating', collectionIdHash, differentQueryHash])).toBeUndefined();
+      expect(updatedState.getIn(['collections', collectionIdHash, differentQueryHash, 'error']))
+        .toEqual(error);
     });
 
     it('should handle DESTROY_FINISHED action', () => {

@@ -19,6 +19,7 @@ import {
   loadCollection,
   createResource,
   updateResource,
+  updateCollection,
   destroyResource,
   queryResource,
   queryCollection,
@@ -43,6 +44,7 @@ describe('index', () => {
     expect(getCollection).toBeDefined();
     expect(clearResource).toBeDefined();
     expect(clearCollection).toBeDefined();
+    expect(updateCollection).toBeDefined();
 
     expect(resourcesReducer).toBeDefined();
     expect(configureIguazuREST).toBeDefined();

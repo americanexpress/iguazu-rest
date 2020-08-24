@@ -80,6 +80,12 @@ export function updateResource({ resource, id, opts }) {
   }));
 }
 
+export function updateCollection({ resource, id, opts }) {
+  return (dispatch) => dispatch(executeFetch({
+    resource, id, opts, actionType: 'UPDATE_COLLECTION',
+  }));
+}
+
 export function destroyResource({ resource, id, opts }) {
   return (dispatch) => dispatch(executeFetch({
     resource, id, opts, actionType: 'DESTROY',

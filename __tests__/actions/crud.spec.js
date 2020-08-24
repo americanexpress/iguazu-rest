@@ -19,6 +19,7 @@ import {
   loadCollection,
   createResource,
   updateResource,
+  updateCollection,
   destroyResource,
   patchResource,
 } from '../../src/actions/crud';
@@ -202,6 +203,17 @@ describe('CRUD actions', () => {
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
       expect(executeFetch).toHaveBeenCalledWith({
         resource, id, opts, actionType: 'UPDATE',
+      });
+    });
+  });
+
+  describe('update collection', () => {
+    it('should update an existing collection', async () => {
+      const thunk = updateCollection({ resource, id, opts });
+      await thunk(dispatch, getState);
+      expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
+      expect(executeFetch).toHaveBeenCalledWith({
+        resource, id, opts, actionType: 'UPDATE_COLLECTION',
       });
     });
   });

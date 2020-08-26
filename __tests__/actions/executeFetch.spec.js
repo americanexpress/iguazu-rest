@@ -130,6 +130,49 @@ describe('executeFetch', () => {
       const data = await thunk(dispatch, getState);
       expect(data).toEqual([{ id: '123', name: 'joe' }]);
     });
+
+    it('should use specified REST method in options if provided', async () => {
+      Object.assign(config, {
+        defaultOpts: { default: 'opt' },
+        resources: {
+          users: {
+            fetch: () => ({
+              url: 'http://api.domain.com/users/:id',
+              opts: {
+                resource: 'opt',
+              },
+            }),
+          },
+        },
+      });
+      fetch.mockResponseOnce(
+        JSON.stringify([{ id: '123', name: 'joe' }, { id: '456', name: 'josephine' }]),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+      const thunk = executeFetch({
+        resource, id, opts: { ...opts, method: 'PUT' }, actionType: 'UPDATE_COLLECTION',
+      });
+      const data = await thunk(dispatch, getState);
+      expect(data).toEqual([{ id: '123', name: 'joe' }, { id: '456', name: 'josephine' }]);
+      expect(fetch).toHaveBeenCalledWith(
+        'http://api.domain.com/users/123',
+        {
+          default: 'opt', method: 'PUT', resource: 'opt', some: 'opt',
+        }
+      );
+      const promise = Promise.resolve(data);
+      expect(dispatch).toHaveBeenCalledWith({
+        type: types.UPDATE_COLLECTION_STARTED,
+        resource,
+        id,
+        opts: {
+          ...opts,
+          method: 'PUT',
+        },
+        promise,
+      });
+      expect(dispatch).toHaveBeenCalledWith('waitAndDispatchFinishedThunk');
+    });
   });
   describe('fetchClient', () => {
     // Helpers and Mocks

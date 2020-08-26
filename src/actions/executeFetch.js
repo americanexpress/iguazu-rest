@@ -41,7 +41,7 @@ const actionTypeMethodMap = {
   LOAD_COLLECTION: 'GET',
   CREATE: 'POST',
   UPDATE: 'PUT',
-  UPDATE_COLLECTION: 'PUT',
+  UPDATE_COLLECTION: 'POST',
   DESTROY: 'DELETE',
   PATCH: 'PATCH',
 };

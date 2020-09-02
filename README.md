@@ -276,6 +276,57 @@ function loadDataAsProps({ store: { dispatch } }) {
 export default connectAsync({ loadDataAsProps })(Articles);
 ```
 
+### Method Opts
+
+Some REST APIs support bulk updates as opposed to individual resource updates. There are many thoughts on this matter but they generally suggest using a POST or a PUT for this type of CRUD action. For iguazu-rest, we take the opinion that by default, updating a collection should be a POST but provide the option to override the method. However, other CRUD actions' methods cannot be overriden (e.g. `loadCollection`).
+
+```jsx
+// Articles.jsx
+import React, { Component, Fragment } from 'react';
+import { connectAsync } from 'iguazu';
+import { updateCollection } from 'iguazu-rest';
+
+class MyUpdatingComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { articles: [] };
+  }
+
+  handleClick = () => {
+    const { updateManyArticles } = this.props;
+    return updateManyArticles
+      .then((articles) => {
+        this.setState({ articles });
+      });
+  };
+
+  render() {
+    const { isLoading, loadedWithErrors, myData } = this.props;
+    const { articles } = this.state;
+
+    return (
+      <Fragment>
+        <button type="button" onClick={this.handleClick}>Update</button>
+        <div>{articles.map((article) => <Article key={article.id} article={article} />)}</div>
+      </Fragment>
+    );
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateManyArticles: () => dispatch(updateCollection({
+      resource: 'articles',
+      opts: {
+        method: 'PUT',
+      },
+    })),
+  };
+}
+
+export default connect(null, mapDispatchToProps)(Articles);
+```
+
 ## 🏆 Contributing
 
 We welcome Your interest in the American Express Open Source Community on Github.

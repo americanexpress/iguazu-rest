@@ -195,15 +195,10 @@ export function resourceReducer(state, action) {
           const resourceIdHash = getResourceIdHash(resource[idKey]);
           return Object.assign(map, { [resourceIdHash]: resource });
         }, {}) : {};
-      const associatedIds = Object.keys(resourceMap);
       return state.withMutations((resourceState) => resourceState
         .deleteIn(['updating', collectionIdHash, queryHash])
         .update('updating', (updating) => (updating.get(collectionIdHash, iMap()).isEmpty() ? updating.delete(collectionIdHash) : updating))
         .mergeIn(['items'], fromJS(resourceMap))
-        .setIn(
-          ['collections', collectionIdHash, queryHash],
-          iMap({ associatedIds: iList(associatedIds) })
-        )
       );
     }
 
@@ -245,13 +240,12 @@ export function resourceReducer(state, action) {
     }
 
     case UPDATE_COLLECTION_ERROR: {
-      const { id, data, opts } = action;
+      const { id, opts } = action;
       const collectionIdHash = getCollectionIdHash(id);
       const queryHash = getQueryHash(opts);
       return state.withMutations((resourceState) => resourceState
         .deleteIn(['updating', collectionIdHash, queryHash])
         .update('updating', (map) => (map.get(collectionIdHash, iMap()).isEmpty() ? map.delete(collectionIdHash) : map))
-        .setIn(['collections', collectionIdHash, queryHash, 'error'], data)
       );
     }
 

@@ -498,8 +498,6 @@ describe('reducer', () => {
       expect(newState.getIn(['updating', collectionIdHash, queryHash])).toBeUndefined();
       expect(newState.getIn(['updating', collectionIdHash, differentQueryHash])).toBeDefined();
       expect(newState.getIn(['items', resourceIdHash]).toJS()).toEqual({ id: '123' });
-      expect(newState.getIn(['collections', collectionIdHash, queryHash]).toJS())
-        .toEqual({ associatedIds: [resourceIdHash] });
 
       const updatedState = resourceReducer(newState, {
         type: UPDATE_COLLECTION_FINISHED,
@@ -528,7 +526,6 @@ describe('reducer', () => {
 
       const newState = resourceReducer(initialState, action);
       expect(newState.getIn(['updating', collectionIdHash, queryHash])).toBeUndefined();
-      expect(newState.getIn(['collections', collectionIdHash, queryHash, 'error'])).toBeUndefined();
     });
 
     it('should handle UPDATE_COLLECTION_ERROR action', () => {
@@ -551,7 +548,6 @@ describe('reducer', () => {
       const newState = resourceReducer(initialState, action);
       expect(newState.getIn(['updating', collectionIdHash, queryHash])).toBeUndefined();
       expect(newState.getIn(['updating', collectionIdHash, differentQueryHash])).toBeDefined();
-      expect(newState.getIn(['collections', collectionIdHash, queryHash, 'error'])).toEqual(error);
 
       const updatedState = resourceReducer(newState, {
         type: UPDATE_COLLECTION_ERROR,
@@ -561,8 +557,6 @@ describe('reducer', () => {
         data: error,
       });
       expect(updatedState.getIn(['updating', collectionIdHash, differentQueryHash])).toBeUndefined();
-      expect(updatedState.getIn(['collections', collectionIdHash, differentQueryHash, 'error']))
-        .toEqual(error);
     });
 
     it('should handle DESTROY_FINISHED action', () => {

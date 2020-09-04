@@ -289,14 +289,15 @@ import { updateCollection } from 'iguazu-rest';
 class MyUpdatingComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { articles: [] };
+    this.state = { articles: [{ id: '1', body: 'article 1' }, { id: '2', body: 'article 2' }] };
   }
 
   handleClick = () => {
     const { updateManyArticles } = this.props;
-    return updateManyArticles
-      .then((articles) => {
-        this.setState({ articles });
+    const { articles } = this.state;
+    return updateManyArticles(articles)
+      .then((updatedArticles) => {
+        this.setState({ articles: updatedArticles });
       });
   };
 
@@ -315,10 +316,11 @@ class MyUpdatingComponent extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateManyArticles: () => dispatch(updateCollection({
+    updateManyArticles: (articles) => dispatch(updateCollection({
       resource: 'articles',
       opts: {
         method: 'PUT',
+        body: articles,
       },
     })),
   };

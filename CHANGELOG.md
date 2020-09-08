@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/americanexpress/iguazu-rest/compare/v1.9.1...v1.10.0) (2020-09-08)
+
+
+### Features
+
+* **updateCollection:** added ([573ef1c](https://github.com/americanexpress/iguazu-rest/commit/573ef1c484d93946d9f7cc5695a6634daafd050a))
+
 ## [1.9.1](https://github.com/americanexpress/iguazu-rest/compare/v1.9.0...v1.9.1) (2020-04-28)
 
 

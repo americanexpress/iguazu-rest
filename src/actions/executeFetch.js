@@ -41,9 +41,12 @@ const actionTypeMethodMap = {
   LOAD_COLLECTION: 'GET',
   CREATE: 'POST',
   UPDATE: 'PUT',
+  UPDATE_COLLECTION: 'POST',
   DESTROY: 'DELETE',
   PATCH: 'PATCH',
 };
+
+const overridableActionMethods = new Set(['UPDATE_COLLECTION']);
 
 async function getAsyncData({
   resource, id, opts, actionType, state, fetchClient,
@@ -61,6 +64,7 @@ async function getAsyncData({
     defaultOpts || {},
     resourceOpts || {},
     opts || {},
+    { ...!overridableActionMethods.has(actionType) && { method: actionTypeMethodMap[actionType] } },
   ]);
   const fetchUrl = buildFetchUrl({ url, id, opts: fetchOpts });
 

@@ -8,12 +8,13 @@
   ],
   "scripts": {
     "build": "babel src --out-dir lib",
-    "lint": "eslint --ignore-path .gitignore --ext js,jsx,md .",
-    "prepublish": "npm run build",
-    "test": "jest && npm run test:git-history",
-    "test:git-history": "commitlint --from origin/master --to HEAD",
+    "prepare": "npm run build",
+    "test": "npm run test:lint && npm run test:unit",
+    "test:lint": "eslint --ignore-path .gitignore --ext js,jsx,md .",
     "test:lockfile": "lockfile-lint -p package-lock.json -t npm -a npm -o https: -c -i",
-    "posttest": "npm run lint && npm run test:lockfile"
+    "test:git-history": "commitlint --from origin/main --to HEAD",
+    "test:unit": "jest",
+    "posttest": "npm run test:git-history && npm run test:lockfile"
   },
   "author": "Maia Teegarden",
   "contributors": [
@@ -93,6 +94,20 @@
     "semantic-release": "^15.13.31"
   },
   "release": {
+    "branches": [
+      "+([0-9])?(.{+([0-9]),x}).x",
+      "main",
+      "next",
+      "next-major",
+      {
+        "name": "beta",
+        "prerelease": true
+      },
+      {
+        "name": "alpha",
+        "prerelease": true
+      }
+    ],
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
@@ -100,8 +115,7 @@
       "@semantic-release/npm",
       "@semantic-release/git",
       "@semantic-release/github"
-    ],
-    "branch": "master"
+    ]
   },
   "husky": {
     "hooks": {

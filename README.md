@@ -1,9 +1,9 @@
 <h1 align="center">
-  <img src='https://github.com/americanexpress/iguazu-rest/raw/master/iguazu-rest.png' alt="Iguazu Rest - One Amex" width='50%'/>
+  <img src='https://github.com/americanexpress/iguazu-rest/raw/main/iguazu-rest.png' alt="Iguazu Rest - One Amex" width='50%'/>
 </h1>
 
 [![npm](https://img.shields.io/npm/v/iguazu-rest)](https://www.npmjs.com/package/iguazu-rest)
-[![Travis (.org) branch](https://img.shields.io/travis/americanexpress/iguazu-rest/master)](https://travis-ci.org/americanexpress/iguazu-rest)
+![Health Check](https://github.com/americanexpress/iguazu-rest/workflows/Health%20Check/badge.svg)
 
 > Iguazu REST is a plugin for the [Iguazu](https://github.com/americanexpress/iguazu)
 > ecosystem that allows for pre-built async calls for REST with smart caching in Redux.
@@ -344,7 +344,7 @@ Please feel free to open pull requests and see [CONTRIBUTING.md](./CONTRIBUTING.
 ## 🗝️ License
 
 Any contributions made under this project will be governed by the [Apache License
-2.0](https://github.com/americanexpress/iguazu-rest/blob/master/LICENSE.txt).
+2.0](https://github.com/americanexpress/iguazu-rest/blob/main/LICENSE.txt).
 
 ## 🗣️ Code of Conduct
 

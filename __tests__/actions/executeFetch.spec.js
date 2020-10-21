@@ -131,6 +131,92 @@ describe('executeFetch', () => {
       expect(data).toEqual([{ id: '123', name: 'joe' }]);
     });
 
+    it('should use specified REST method for LOAD in options if provided', async () => {
+      Object.assign(config, {
+        defaultOpts: { default: 'opt' },
+        resources: {
+          users: {
+            fetch: () => ({
+              url: 'http://api.domain.com/users/:id',
+              opts: {
+                resource: 'opt',
+              },
+            }),
+          },
+        },
+      });
+      fetch.mockResponseOnce(
+        JSON.stringify([{ id: '123', name: 'joe' }, { id: '456', name: 'josephine' }]),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+      const thunk = executeFetch({
+        resource, id, opts: { ...opts, method: 'POST' }, actionType: 'LOAD',
+      });
+      const data = await thunk(dispatch, getState);
+      expect(data).toEqual([{ id: '123', name: 'joe' }, { id: '456', name: 'josephine' }]);
+      expect(fetch).toHaveBeenCalledWith(
+        'http://api.domain.com/users/123',
+        {
+          default: 'opt', method: 'POST', resource: 'opt', some: 'opt',
+        }
+      );
+      const promise = Promise.resolve(data);
+      expect(dispatch).toHaveBeenCalledWith({
+        type: types.LOAD_STARTED,
+        resource,
+        id,
+        opts: {
+          ...opts,
+          method: 'POST',
+        },
+        promise,
+      });
+      expect(dispatch).toHaveBeenCalledWith('waitAndDispatchFinishedThunk');
+    });
+
+    it('should use specified REST method for LOAD_COLLECTION in options if provided', async () => {
+      Object.assign(config, {
+        defaultOpts: { default: 'opt' },
+        resources: {
+          users: {
+            fetch: () => ({
+              url: 'http://api.domain.com/users/:id',
+              opts: {
+                resource: 'opt',
+              },
+            }),
+          },
+        },
+      });
+      fetch.mockResponseOnce(
+        JSON.stringify([{ id: '123', name: 'joe' }, { id: '456', name: 'josephine' }]),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+      const thunk = executeFetch({
+        resource, id, opts: { ...opts, method: 'POST' }, actionType: 'LOAD_COLLECTION',
+      });
+      const data = await thunk(dispatch, getState);
+      expect(data).toEqual([{ id: '123', name: 'joe' }, { id: '456', name: 'josephine' }]);
+      expect(fetch).toHaveBeenCalledWith(
+        'http://api.domain.com/users/123',
+        {
+          default: 'opt', method: 'POST', resource: 'opt', some: 'opt',
+        }
+      );
+      const promise = Promise.resolve(data);
+      expect(dispatch).toHaveBeenCalledWith({
+        type: types.LOAD_COLLECTION_STARTED,
+        resource,
+        id,
+        opts: {
+          ...opts,
+          method: 'POST',
+        },
+        promise,
+      });
+      expect(dispatch).toHaveBeenCalledWith('waitAndDispatchFinishedThunk');
+    });
+
     it('should use specified REST method for UPDATE_COLLECTION in options if provided', async () => {
       Object.assign(config, {
         defaultOpts: { default: 'opt' },
@@ -193,19 +279,19 @@ describe('executeFetch', () => {
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
       const thunk = executeFetch({
-        resource, id, opts: { ...opts, method: 'POST' }, actionType: 'LOAD',
+        resource, id, opts: { ...opts, method: 'POST' }, actionType: 'UPDATE',
       });
       const data = await thunk(dispatch, getState);
       expect(data).toEqual([{ id: '123', name: 'joe' }, { id: '456', name: 'josephine' }]);
       expect(fetch).toHaveBeenCalledWith(
         'http://api.domain.com/users/123',
         {
-          default: 'opt', method: 'GET', resource: 'opt', some: 'opt',
+          default: 'opt', method: 'PUT', resource: 'opt', some: 'opt',
         }
       );
       const promise = Promise.resolve(data);
       expect(dispatch).toHaveBeenCalledWith({
-        type: types.LOAD_STARTED,
+        type: types.UPDATE_STARTED,
         resource,
         id,
         opts: {

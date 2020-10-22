@@ -278,7 +278,7 @@ export default connectAsync({ loadDataAsProps })(Articles);
 
 ### Method Opts
 
-Some REST APIs support bulk updates as opposed to individual resource updates. There are many thoughts on this matter but they generally suggest using a POST or a PUT for this type of CRUD action. For iguazu-rest, we take the opinion that by default, updating a collection should be a POST but provide the option to override the method. However, other CRUD actions' methods cannot be overriden (e.g. `loadCollection`).
+Some REST APIs support bulk updates as opposed to individual resource updates. There are many thoughts on this matter but they generally suggest using a POST or a PUT for this type of CRUD action. For iguazu-rest, we take the opinion that by default, updating a collection should be a POST but provide the option to override the method.
 
 ```jsx
 // Articles.jsx

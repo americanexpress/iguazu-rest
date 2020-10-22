@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/americanexpress/iguazu-rest/compare/v1.10.0...v1.10.1) (2020-10-22)
+
+
+### Bug Fixes
+
+* **executeFetch:** revert forced methods ([#22](https://github.com/americanexpress/iguazu-rest/issues/22)) ([d4206b7](https://github.com/americanexpress/iguazu-rest/commit/d4206b7cbd1c2f64d93fd7be9d5f984b10338693))
+
 # [1.10.0](https://github.com/americanexpress/iguazu-rest/compare/v1.9.1...v1.10.0) (2020-09-08)
 
 

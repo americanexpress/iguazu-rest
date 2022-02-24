@@ -65,7 +65,9 @@ configureIguazuREST({
       idKey: 'userId',
       // optionally massage the data to be more RESTful,
       // collections need to be lists, resources need to be objects
-      transformData: (data, { id, actionType, state }) => massageDataToBeRESTful(data),
+      transformData: (data, {
+        id, actionType, opts, state,
+      }) => massageDataToBeRESTful(data),
     },
   },
   // opts that will be sent along with every resource request

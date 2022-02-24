@@ -71,7 +71,9 @@ async function getAsyncData({
   const res = await composedFetchClient(fetchUrl, fetchOpts);
   const rawData = await extractDataFromResponse(res);
   const { transformData } = config.resources[resource];
-  const data = transformData ? transformData(rawData, { id, opts, actionType }) : rawData;
+  const data = transformData ? transformData(rawData, {
+    id, opts, actionType, state,
+  }) : rawData;
 
   return data;
 }

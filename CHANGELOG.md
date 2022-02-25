@@ -1,3 +1,10 @@
+## [1.10.2](https://github.com/americanexpress/iguazu-rest/compare/v1.10.1...v1.10.2) (2022-02-25)
+
+
+### Bug Fixes
+
+* **labeler:** outdated label usage ([#39](https://github.com/americanexpress/iguazu-rest/issues/39)) ([a313cea](https://github.com/americanexpress/iguazu-rest/commit/a313cea777ef78fa40e44a57203011f5d84c925e))
+
 ## [1.10.1](https://github.com/americanexpress/iguazu-rest/compare/v1.10.0...v1.10.1) (2020-10-22)
 
 

@@ -238,7 +238,9 @@ These actions return a promise that resolves with the fetched data on successful
 
 ### Selectors
 #### `getResource({ resource, id })(state)`
+#### `getResourceIsLoaded({ resource, id })(state)`
 #### `getCollection({ resource, id, opts })(state)`
+#### `getCollectionIsLoaded({ resource, id, opts })(state)`
 
 ### Cleaning Actions
 #### `clearResource({ resource, id, opts })`

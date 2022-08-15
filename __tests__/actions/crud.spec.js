@@ -25,11 +25,11 @@ import {
 } from '../../src/actions/crud';
 
 jest.mock('../../src/selectors', () => ({
-  resourceIsLoaded: jest.fn(),
+  getResourceIsLoaded: jest.fn(),
   getResource: jest.fn(() => () => {}),
   resourceIsLoading: jest.fn(),
   getResourceLoadPromise: jest.fn(),
-  collectionIsLoaded: jest.fn(),
+  getCollectionIsLoaded: jest.fn(),
   getCollection: jest.fn(() => () => []),
   collectionIsLoading: jest.fn(),
   getCollectionLoadPromise: jest.fn(),
@@ -54,7 +54,7 @@ describe('CRUD actions', () => {
   describe('loadResource', () => {
     it('should load a single resource if it is not loaded or loading', async () => {
       const thunk = loadResource({ resource, id, opts });
-      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
+      require('../../src/selectors').getResourceIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       require('../../src/selectors').resourceIsLoading.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
@@ -65,7 +65,7 @@ describe('CRUD actions', () => {
 
     it('should resolve with the cached resource if it is already loaded', async () => {
       const thunk = loadResource({ resource, id, opts });
-      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
+      require('../../src/selectors').getResourceIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).not.toHaveBeenCalled();
       expect(executeFetch).not.toHaveBeenCalled();
@@ -75,7 +75,7 @@ describe('CRUD actions', () => {
       const error = new Error('load error');
       try {
         const thunk = loadResource({ resource, id, opts });
-        require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
+        require('../../src/selectors').getResourceIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
         require('../../src/selectors').getResource.mockImplementationOnce(() => () => error); // eslint-disable-line global-require
         await thunk(dispatch, getState);
       } catch (e) {
@@ -87,7 +87,7 @@ describe('CRUD actions', () => {
 
     it('should return with the loading promise if it is already in progress', async () => {
       const thunk = loadResource({ resource, id, opts });
-      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
+      require('../../src/selectors').getResourceIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       require('../../src/selectors').resourceIsLoading.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       require('../../src/selectors').getResourceLoadPromise.mockImplementationOnce(() => () => Promise.resolve()); // eslint-disable-line global-require
       await thunk(dispatch, getState);
@@ -99,7 +99,7 @@ describe('CRUD actions', () => {
       const thunk = loadResource({
         resource, id, opts, forceFetch: true,
       });
-      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
+      require('../../src/selectors').getResourceIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       require('../../src/selectors').resourceIsLoading.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
@@ -112,7 +112,7 @@ describe('CRUD actions', () => {
       const thunk = loadResource({
         resource, id, opts, forceFetch: true,
       });
-      require('../../src/selectors').resourceIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
+      require('../../src/selectors').getResourceIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       require('../../src/selectors').resourceIsLoading.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
@@ -125,7 +125,7 @@ describe('CRUD actions', () => {
   describe('loadCollection', () => {
     it('should load the collection if it is not loaded or loading', async () => {
       const thunk = loadCollection({ resource, opts });
-      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
+      require('../../src/selectors').getCollectionIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       require('../../src/selectors').collectionIsLoading.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
@@ -134,7 +134,7 @@ describe('CRUD actions', () => {
 
     it('should not refetch the collection if it is already loaded', async () => {
       const thunk = loadCollection({ resource, opts });
-      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
+      require('../../src/selectors').getCollectionIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).not.toHaveBeenCalled();
       expect(executeFetch).not.toHaveBeenCalled();
@@ -144,7 +144,7 @@ describe('CRUD actions', () => {
       const error = new Error('load error');
       try {
         const thunk = loadCollection({ resource, id, opts });
-        require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
+        require('../../src/selectors').getCollectionIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
         require('../../src/selectors').getCollection.mockImplementationOnce(() => () => error); // eslint-disable-line global-require
         await thunk(dispatch, getState);
       } catch (e) {
@@ -156,7 +156,7 @@ describe('CRUD actions', () => {
 
     it('should not refetch the resource if a fetch is already in progress', async () => {
       const thunk = loadCollection({ resource, opts });
-      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
+      require('../../src/selectors').getCollectionIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       require('../../src/selectors').collectionIsLoading.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       require('../../src/selectors').getCollectionLoadPromise.mockImplementationOnce(() => () => Promise.resolve()); // eslint-disable-line global-require
       await thunk(dispatch, getState);
@@ -166,7 +166,7 @@ describe('CRUD actions', () => {
 
     it('should load the collection if the collection is loaded, but forceFetch is specified', async () => {
       const thunk = loadCollection({ resource, opts, forceFetch: true });
-      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
+      require('../../src/selectors').getCollectionIsLoaded.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       require('../../src/selectors').collectionIsLoading.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);
@@ -177,7 +177,7 @@ describe('CRUD actions', () => {
       const thunk = loadCollection({
         resource, id, opts, forceFetch: true,
       });
-      require('../../src/selectors').collectionIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
+      require('../../src/selectors').getCollectionIsLoaded.mockImplementationOnce(() => () => false); // eslint-disable-line global-require
       require('../../src/selectors').collectionIsLoading.mockImplementationOnce(() => () => true); // eslint-disable-line global-require
       await thunk(dispatch, getState);
       expect(dispatch).toHaveBeenCalledWith(mockFetchPromise);

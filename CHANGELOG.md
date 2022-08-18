@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/americanexpress/iguazu-rest/compare/v1.10.2...v1.11.0) (2022-08-18)
+
+
+### Features
+
+* **selector:** rename and expose loaded selectors ([#43](https://github.com/americanexpress/iguazu-rest/issues/43)) ([3f6cfba](https://github.com/americanexpress/iguazu-rest/commit/3f6cfbafecb226928c306a195a2aa6a17c855c59))
+
 ## [1.10.2](https://github.com/americanexpress/iguazu-rest/compare/v1.10.1...v1.10.2) (2022-02-25)
 
 

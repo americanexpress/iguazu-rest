@@ -24,11 +24,11 @@ import {
 import { configureIguazuREST } from '../src/config';
 
 import {
-  resourceIsLoaded,
+  getResourceIsLoaded,
   getResource,
   resourceIsLoading,
   getResourceLoadPromise,
-  collectionIsLoaded,
+  getCollectionIsLoaded,
   getCollection,
   collectionIsLoading,
   getCollectionLoadPromise,
@@ -43,7 +43,7 @@ describe('selectors', () => {
     configureIguazuREST({ getToState: (state) => state.deep.resources });
   });
 
-  describe('resourceIsLoaded', () => {
+  describe('getResourceIsLoaded', () => {
     it('should return true if the resource is loaded', () => {
       const state = {
         deep: {
@@ -52,7 +52,7 @@ describe('selectors', () => {
           }),
         },
       };
-      expect(resourceIsLoaded({ resource, id })(state)).toBe(true);
+      expect(getResourceIsLoaded({ resource, id })(state)).toBe(true);
     });
 
     it('should return false if the resource is not loaded', () => {
@@ -63,7 +63,7 @@ describe('selectors', () => {
           }),
         },
       };
-      expect(resourceIsLoaded({ resource, id })(state)).toBe(false);
+      expect(getResourceIsLoaded({ resource, id })(state)).toBe(false);
     });
   });
 
@@ -138,7 +138,7 @@ describe('selectors', () => {
           }),
         },
       };
-      expect(resourceIsLoaded({ resource, id })(state)).toBe(true);
+      expect(getResourceIsLoaded({ resource, id })(state)).toBe(true);
     });
 
     it('should return false if the resource is not loading', () => {
@@ -167,7 +167,7 @@ describe('selectors', () => {
     });
   });
 
-  describe('collectionIsLoaded', () => {
+  describe('getCollectionIsLoaded', () => {
     it('should return true if the collection is loaded', () => {
       const collectionIdHash = getCollectionIdHash();
       const queryHash = getQueryHash();
@@ -178,7 +178,7 @@ describe('selectors', () => {
           }),
         },
       };
-      expect(collectionIsLoaded({ resource })(state)).toBe(true);
+      expect(getCollectionIsLoaded({ resource })(state)).toBe(true);
     });
 
     it('should return true if the collection is loaded with error', () => {
@@ -200,7 +200,7 @@ describe('selectors', () => {
           }),
         },
       };
-      expect(collectionIsLoaded({ resource })(state)).toBe(true);
+      expect(getCollectionIsLoaded({ resource })(state)).toBe(true);
     });
 
     it('should return false if the collection is not loaded', () => {
@@ -211,7 +211,7 @@ describe('selectors', () => {
           }),
         },
       };
-      expect(collectionIsLoaded({ resource })(state)).toBe(false);
+      expect(getCollectionIsLoaded({ resource })(state)).toBe(false);
     });
   });
 

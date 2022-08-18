@@ -23,7 +23,7 @@ import {
   getQueryHash,
 } from './helpers/hash';
 
-export function resourceIsLoaded({ resource, id }) {
+export function getResourceIsLoaded({ resource, id }) {
   return (state) => {
     const resourceState = config.getToState(state).get(resource, iMap());
     const idHash = getResourceIdHash(id);
@@ -50,7 +50,7 @@ export function getResourceLoadPromise({ resource, id }) {
   return (state) => config.getToState(state).getIn([resource, 'loading', getResourceIdHash(id)]);
 }
 
-export function collectionIsLoaded({ resource, id, opts }) {
+export function getCollectionIsLoaded({ resource, id, opts }) {
   return (state) => {
     const idHash = getCollectionIdHash(id);
     const queryHash = getQueryHash(opts);

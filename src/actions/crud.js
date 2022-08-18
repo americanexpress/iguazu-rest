@@ -15,11 +15,11 @@
  */
 
 import {
-  resourceIsLoaded,
+  getResourceIsLoaded,
   getResource,
   resourceIsLoading,
   getResourceLoadPromise,
-  collectionIsLoaded,
+  getCollectionIsLoaded,
   getCollection,
   collectionIsLoading,
   getCollectionLoadPromise,
@@ -32,7 +32,7 @@ export function loadResource({
   return (dispatch, getState) => {
     const state = getState();
     let promise;
-    if (resourceIsLoaded({ resource, id })(state) && !forceFetch) {
+    if (getResourceIsLoaded({ resource, id })(state) && !forceFetch) {
       const data = getResource({ resource, id })(state);
       promise = data instanceof Error ? Promise.reject(data) : Promise.resolve(data);
     } else if (resourceIsLoading({ resource, id })(state) && !forceFetch) {
@@ -53,7 +53,7 @@ export function loadCollection({
   return (dispatch, getState) => {
     const state = getState();
     let promise;
-    if (collectionIsLoaded({ resource, id, opts })(state) && !forceFetch) {
+    if (getCollectionIsLoaded({ resource, id, opts })(state) && !forceFetch) {
       const data = getCollection({ resource, id, opts })(state);
       promise = data instanceof Error ? Promise.reject(data) : Promise.resolve(data);
     } else if (collectionIsLoading({ resource, id, opts })(state) && !forceFetch) {

@@ -31,7 +31,9 @@ import {
 
 import {
   getResource,
+  getResourceIsLoaded,
   getCollection,
+  getCollectionIsLoaded,
 } from './selectors';
 
 import {
@@ -55,7 +57,9 @@ export {
   queryResource,
   queryCollection,
   getResource,
+  getResourceIsLoaded,
   getCollection,
+  getCollectionIsLoaded,
   clearResource,
   clearCollection,
   resourcesReducer,

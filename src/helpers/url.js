@@ -42,9 +42,9 @@ export const encodeUriSegment = (val) => encodeUriQuery(val)
   .replace(/%2B/gi, '+');
 
 export const parseUrlParams = (url) => url.split(/\W/).reduce((urlParams, param) => {
-  if (!NUMBER_REGEX.test(param) && param && (new RegExp(`(^|[^\\\\]):${param}(\\W|$)`).test(url))) {
+  if (!NUMBER_REGEX.test(param) && param && new RegExp(`(^|[^\\\\]):${param}(\\W|$)`).test(url)) {
     urlParams[param] = { // eslint-disable-line no-param-reassign
-      isQueryParamValue: (new RegExp(`\\?.*=:${param}(?:\\W|$)`)).test(url),
+      isQueryParamValue: new RegExp(`\\?.*=:${param}(?:\\W|$)`).test(url),
     };
   }
   return urlParams;
@@ -71,7 +71,6 @@ export const splitUrlByProtocolAndDomain = (url) => {
 };
 
 const isObject = (maybeObject) => typeof maybeObject === 'object';
-
 
 export function addQueryParams({ url, opts = {} }) {
   return Object.keys(opts.query || []).reduce((wipUrl, queryParam) => {

@@ -14,7 +14,6 @@
  * permissions and limitations under the License.
  */
 
-
 export const LOAD_STARTED = '@@iguazu-rest/LOAD_STARTED';
 export const LOAD_COLLECTION_STARTED = '@@iguazu-rest/LOAD_COLLECTION_STARTED';
 export const CREATE_STARTED = '@@iguazu-rest/CREATE_STARTED';

@@ -57,7 +57,6 @@ function getIdKey(resource) {
   return config.resources[resource].idKey || 'id';
 }
 
-
 export const initialResourceState = iMap({
   items: iMap(),
   collections: iMap(),

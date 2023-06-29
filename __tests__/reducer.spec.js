@@ -320,7 +320,6 @@ describe('reducer', () => {
       const opts = { query: 'value' };
       const queryHash = getQueryHash(opts);
 
-
       const newState = resourceReducer(initialResourceState, action);
       expect(newState.getIn(['loading', collectionIdHash, queryHash])).toBeUndefined();
       expect(newState.getIn(['error', collectionIdHash, queryHash])).toBeUndefined();

@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/americanexpress/iguazu-rest/compare/v1.11.0...v1.11.1) (2023-08-22)
+
+
+### Bug Fixes
+
+* **deps:** security update ([#52](https://github.com/americanexpress/iguazu-rest/issues/52)) ([d972463](https://github.com/americanexpress/iguazu-rest/commit/d972463ce25c791e1474bf14b68702530b002541))
+
 # [1.11.0](https://github.com/americanexpress/iguazu-rest/compare/v1.10.2...v1.11.0) (2022-08-18)
 
 
